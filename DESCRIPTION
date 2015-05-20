@@ -1,0 +1,20 @@
+Package: metagear
+Version: 0.1
+Date: 2015-05-20
+Title: Comprehensive Research Synthesis Tools for Systematic Reviews
+        and Meta-Analysis
+Authors@R: person("Marc J.", "Lajeunesse", email = "lajeunesse@usf.edu", role = c("aut", "cre"))
+Description: Functionalities for facilitating systematic reviews, data extractions, and meta-analyses.  It includes a GUI (graphical user interface) to help screen the abstracts and titles of bibliographic data; tools to assign screening effort across multiple collaborators/reviewers and to assess inter-reviewer reliability; tools to help automate the download and retrieval of journal PDF articles from online databases; automated data extractions from scatter-plots; PRISMA (Preferred Reporting Items for Systematic Reviews and Meta-Analyses) flow diagrams; simple imputation tools to fill gaps in incomplete or missing study parameters; generation of random effects sizes for Hedges' d, log response ratio, odds ratio, and correlation coefficients for Monte Carlo experiments; covariance equations for modelling dependencies among multiple effect sizes (e.g., effect sizes with a common control); and finally summaries that replicate analyses and outputs from widely used but no longer updated meta-analysis software.  Funding for this package was supported by National Science Foundation (NSF) grants DBI-1262545 and DEB-1451031.
+Type: Package
+Depends: R (>= 3.0.0)
+Imports: EBImage (>= 4.4.0), gWidgetsRGtk2 (>= 0.0-83), gWidgets (>=
+        0.0-54), stringr (>= 0.6.2), metafor (>= 1.9-4), MASS (>=
+        7.3-29), Matrix (>= 1.1-3)
+License: GPL (>= 2)
+URL: http://lajeunesse.myweb.usf.edu
+Packaged: 2015-05-21 13:01:03 UTC; MJL
+Author: Marc J. Lajeunesse [aut, cre]
+Maintainer: Marc J. Lajeunesse <lajeunesse@usf.edu>
+NeedsCompilation: no
+Repository: CRAN
+Date/Publication: 2015-05-21 16:24:43

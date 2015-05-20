@@ -1,0 +1,15 @@
+citHeader("To cite metagear in a publication use:")
+
+citEntry(
+	entry="Article",
+	title="metagear: ",
+	author="Marc J. Lajeunesse",
+	journal="Methods in Ecology and Evolution",
+	year=2015,
+	volume="3",
+	pages="217-223",
+	textVersion="lajeunesse, M.J.(2012) metagear: . Methods Ecol. Evol. 3 217-223. doi:10.1111/j.2041-210X.2011.00169.x"	   
+)
+
+citFooter("Additions and modifications to metagear are frequent, to help with reproducibility of output please cite its version number. Find it with 'help(package=metafor)'.")
+
