@@ -36,3 +36,16 @@ NULL
 #' @usage data(Kam_et_al_2003_Fig2)
 #' @format A \code{EBImage} object containing a scatterplot raster image
 NULL
+
+#' An example image of a bar plot figure
+#'
+#' An EBImage object depicting a bar plot image from Figure 4 of Kortum, P., and
+#'    Acymyan, C.Z. 2013. How low can you go? Is the System Usability Scale 
+#'    range restricted? Journal of Usability Studies 9:14-24.
+#'
+#' @docType data
+#' @keywords datasets
+#' @name Kortum_and_Acymyan_2013_Fig4
+#' @usage data(Kortum_and_Acymyan_2013_Fig4)
+#' @format A \code{EBImage} object containing a bar plot raster image
+NULL

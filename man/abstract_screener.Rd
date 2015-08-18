@@ -13,13 +13,13 @@ abstract_screener(file = file.choose(), aReviewer = NULL,
 \arguments{
 \item{file}{The file name and location of a .csv file containing the
 abstracts and titles.  The .csv file should have been initialized with
-/code{effort_initialize} and populated with screeners (reviewers) using
-/code{effort_distribute}.}
+\code{effort_initialize} and populated with screeners (reviewers) using
+\code{effort_distribute}.}
 
 \item{aReviewer}{The name (a string) of the reviewer to screen abstracts.
 It is used when there are multiple reviewers assigned to screen abstracts.
 The default column label is "REVIEWERS" as initialized with
-/code{effort_distribute}.}
+\code{effort_distribute}.}
 
 \item{reviewerColumnName}{The name of the column heading in the .csv file
 that contains the reviewer names that will screen abstracts.  The default

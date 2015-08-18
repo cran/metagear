@@ -29,6 +29,7 @@
 #' @seealso \code{\link{effort_initialize}}, \code{\link{effort_distribute}}, 
 #'    \code{\link{effort_summary}}
 #'
+#' @importFrom utils read.csv
 #' @export effort_merge
 
 effort_merge <- function (directory = getwd(),

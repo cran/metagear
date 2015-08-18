@@ -1,7 +1,8 @@
 #' Replicate meta-analysis results and summaries from MetaWin 2.0.
 #'
 #' Replicate meta-analysis results and summaries from Rosenberg's et al. (2000)
-#' software 'MetaWin' 2.0.  
+#' software 'MetaWin' 2.0.  Currently only replicates moderator analyses and not
+#' meta-regressions.  
 #'
 #' @param model A two-sided linear formula object describing the model, with the
 #'    response (effect sizes) on the left of a ~ operator and the moderator 
@@ -25,7 +26,7 @@
 #'    Sunderland, Massachusetts. 
 #'
 #' @importFrom metafor rma
-#' @importFrom stats lm
+#' @importFrom stats anova lm as.formula pchisq qt
 #' @export replicate_MetaWin2.0
 
 replicate_MetaWin2.0 <- function(model, 

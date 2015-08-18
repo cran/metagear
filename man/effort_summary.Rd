@@ -35,7 +35,7 @@ Summarizes the number of studies screened, which were identified to be
 included/excluded from the project, as well as those with conflicting
 agreement on their inclusion/exclusion.  If a dual (paired) design was
 implemented to screen references, then it also provides inter-reviewer
-agreement estimate following Cohen (1960) that describes the aggreement (or
+agreement estimate following Cohen (1960) that describes the agreement (or
 repeatability) of screening/coding decisions.
 }
 \references{

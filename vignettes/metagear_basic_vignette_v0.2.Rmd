@@ -1,0 +1,492 @@
+
+
+---
+title: Basic examples of screening studies, extracting data, and meta-analysis with
+  the *metagear* package for R
+author: '[Marc J. Lajeunesse](http://lajeunesse.myweb.usf.edu/)'
+date: "University of South Florida, August 5th 2015 (for metagear v. 0.2)"
+output:
+  html_document:
+    smart: no
+    toc: yes
+  pdf_document:
+    keep_tex: yes
+    latex_engine: xelatex
+    toc: yes
+  word_document: default
+---
+
+
+```{r set-options, echo=FALSE, cache=FALSE}
+options(width = 800)
+```
+
+-------
+
+# Introduction
+The **metagear** package for [R](http://www.r-project.org/) contains tools for facilitating [systematic reviews](https://en.wikipedia.org/wiki/Systematic_review), data extraction, and [meta-analyses](https://en.wikipedia.org/wiki/Meta-analysis).  It aims to facilitate research synthesis as a whole, by providing a single source for several of the common tasks involved in screening studies, extracting outcomes from studies, and performing statistical analyses on these outcomes using meta-analysis.  Below are a few illustrative examples of applications of these functionalities.  
+
+Updates to these examples will be posted on our [research webpage at USF](http://lajeunesse.myweb.usf.edu/).
+
+For the source code of **metagear** see: <http://cran.r-project.org/web/packages/metagear/index.html>.
+
+---
+
+# Delegating reference screening effort to a team
+One of the first tasks of a systematic review is to screen the titles and abstracts of study references to assess their relevance for the synthesis project.  For example, after a [bibliographic search](https://en.wikipedia.org/wiki/Bibliographic_database) using Web of Science, there may be thousands of references generated; references from experimental studies, modeling studies, review papers, commentaries, etc.  These need to be reviewed individually as a first pass to exclude those that do not fit the synthesis project; such as excluding simulation studies that do not report experimental outcomes useful for estimating an [effect size](https://en.wikipedia.org/wiki/Effect_size).  
+
+However, individually screening thousands of references is time consuming, and large synthesis projects may benefit from delegating this screening effort to a research team.  Having multiple people screen references also provides an opportunity to assess the repeatability of these screening decisions.   
+
+**In this example, we have the following goals:**
+
+1. Initialize a dataframe containing bibliographic data (tile, abstract, journal) from multiple study references. 
+2. Distribute these references randomly to two team members.
+3. Merge and summarize the screening efforts of this team.
+
+First, let's start by loading and exploring the contents of a pre-packaged dataset from **metagear** that contains the bibliographic information of 11 journal articles (`example_references_metagear`).  These data are a subset of references generated from a search in Web of Science for "Genome size", and contain the abstracts, titles, volume, page numbers, and authors of these references.  
+
+```{r}
+# load package
+library(metagear)
+# load a bibliographic dataset with the authors, titles, and abstracts of multiple study references 
+data(example_references_metagear)
+# display the bibliographic variables in this dataset
+names(example_references_metagear)
+# display the various Journals that these references were published in
+example_references_metagear["JOURNAL"]
+```
+
+Our next step is to initialize/prime this dataset for screening tasks.  Our goal is to distribute screening efforts to two screeners/reviewers: "Christina" and "Luc".  Here each reviewer will screen a separate subset of these references (a forthcoming example will review how to set up a dual screening design where each member screens the same references).  The dataset first needs to be initialized as follows:
+
+```{r}
+# prime the study-reference dataset
+theRefs <- effort_initialize(example_references_metagear)
+# display the new columns added by effort_initialize 
+names(theRefs)
+```
+
+Note that the `effort_initialize()` function added three new columns: "STUDY_ID" which is a unique number for each reference (e.g., from 1 to 11), "REVIEWERS" an empty column with NAs that will be later populated with our reviewers (e.g., Christina and Luc), and finally the "INCLUDE" column, which will later contain the screening efforts by the two reviewers.  
+
+Screening efforts are essentially how individual study references get coded for inclusion in the synthesis project; currently the "INCLUDE" column has each reference coded as "not vetted", indicating that each reference has yet to be screened.     
+
+Our next task is to delegate screening efforts to our two reviewers Christina and Luc.  Our goal is to randomly distribute these references to each reviewer.
+
+```{r}
+# randomly distribute screening effort to a team
+theTeam <- c("Christina", "Luc")
+theRefs_unscreened <- effort_distribute(theRefs, reviewers = theTeam)
+# display screening tasks
+theRefs_unscreened[c("STUDY_ID", "REVIEWERS")]
+```
+
+The screening efforts can also be delegated unevenly, such as below where Luc will take on 80% of the screening effort:
+
+```{r}
+# randomly distribute screening effort to a team, but with Luc handeling 80% of the work
+theRefs_unscreened <- effort_distribute(theRefs, reviewers = theTeam, effort = c(20, 80))
+theRefs_unscreened[c("STUDY_ID", "REVIEWERS")]
+```
+
+The effort can also be redistributed with the `effort_redistribute()` function.  In the above example we assigned Luc 80% of the work.  Now let's redistribute half of Luc's work to a new team member "Patsy".   
+
+```{r}
+theRefs_Patsy <- effort_redistribute(theRefs_unscreened, 
+                                     reviewer = "Luc",
+                                     remove_effort = "50", # move 50% of Luc's work to Patsy
+                                     reviewers = c("Luc", "Patsy")) # team members loosing and picking up work
+theRefs_Patsy[c("STUDY_ID", "REVIEWERS")]
+```
+
+The references have now been randomly assigned to either Christina or Luc.  The whole initialization of the reference dataset with `effort_initialize()` can be abbreviated with `effort_distribute(example_references_metagear, reviewers = c("Christina", "Luc"), initialize = TRUE)`.
+
+Now that screening tasks have been distributed, the next stage is for reviewers to start the manual screening of each assigned reference.  This is perhaps best done by providing a separate file of these references to Christina and Luc.  They can then work on screening these references separately and remotely.  Once the screening is complete, we can then merge these files into a complete dataset (we'll get to this later).
+
+The `effort_distribute()` function can also save to file each reference subset; these can be given to Christina and Luc to start their work.  This is done by setting the 'save_split' parameter to TRUE.
+
+```{r}
+# randomly distribute screening effort to a team, but with Luc handling 80% of the work, 
+# but also saving these screening tasks to separate files for each team member
+theRefs_unscreened <- effort_distribute(theRefs, reviewers = theTeam, effort = c(20, 80), save_split = TRUE)
+theRefs_unscreened[c("STUDY_ID", "REVIEWERS")]
+list.files(pattern = "effort")
+```
+
+These two effort_*.csv files contain the assigned references for Christina and Luc.  These can be passed on to each team member so that they can begin screening/coding each reference for inclusion in the synthesis project.
+
+References should be coded as "YES" or "NO" for inclusion, but can also be coded as "MAYBE" if bibliographic information is missing or there is inadequate information to make a proper assessment of the study.
+
+The `abstract_screener()` function can be used to facilitate this screening process (an example is forthcoming), but for the sake of introducing how screening efforts can be merged and summarized, I manually coded all the references in both of Christina's and Luc's effort_*.csv files.  Essentially, I randomly coded each references as either "YES", "NO", or "MAYBE".  These files now contain the completed screening efforts.
+
+We can merge these two files with the completed screening efforts using the `effort_merge()` function, as well as summarize the outcome of screening tasks using the `effort_summary()` function.
+
+```{r,echo=FALSE,results="hide"}
+# HIDDEN: randomly populate the INCLUDE columns of effort_Luc.csv and effort_Christina.csv with
+# random inclusion codes of YES, NO, MAYBE
+lapply(list.files(getwd(), pattern = "effort"), 
+       function(x) {
+        tempCSV <- read.csv(x, header = TRUE)
+        tempCSV["INCLUDE"] <- sample(c("YES","NO","MAYBE"), nrow(tempCSV), replace = TRUE)
+        write.csv(tempCSV, x)
+        return(tempCSV)
+       }
+      )
+```
+
+```{r}
+# merge the effort_Luc.csv and effort_Christina.csv [WARNING: will merge all files named "effort_*" in directory]
+theRefs_screened <- effort_merge()
+theRefs_screened[c("STUDY_ID", "REVIEWERS", "INCLUDE")]
+theSummary <- effort_summary(theRefs_screened)
+```
+
+```{r,echo=FALSE,results="hide"}
+# HIDDEN: clean up generated files
+lapply(c("effort_Luc.csv", "effort_Christina.csv"), file.remove)
+```
+
+The summary of screening tasks describes the outcomes of which references had studies appropriate for the synthesis project, while also outlining which need to be re-assessed.  The team should discuss these challenging references and decide if they are appropriate for inclusion or track down any additional/missing information needed to make proper assessment of their inclusion. 
+
+---
+
+# Downloading PDFs
+
+Once references have been screened, **metagear** can be used to download and organize the full-texts of these references.  However, note that the download success of these PDFs is entirely conditional on the journal subscription coverage of the host institution running **metagear**.  Also note that **metagear** only supports the download of a PDF article if the DOI (digital object identifier) is available for that article. 
+
+**In this example, we have the following goals:**
+
+1. Download a single PDF with the `PDF_download()` function.
+2. Download multiple PDFs with the `PDFs_collect()` function.
+
+Let's start by loading the pre-packaged reference dataset in **metagear** that contains the bibliographic information of 11 journal articles (`example_references_metagear`).  This dataset includes a column "DOI" which contains the DOI of each article (if available).  
+
+```{r}
+# load package
+library(metagear)
+# load a bibliographic dataset with the DOIs
+data(example_references_metagear)
+# display the year published of each study reference and their DOIs
+example_references_metagear[c("JOURNAL", "DOI")]
+```
+
+Note that references collected from bibliographic databases like Web of Science will often be incomplete.  For example, the study published in EVOLUTIONARY ECOLOGY RESEARCH does not have a DOI (described above as NA).  This is because EVOLUTIONARY ECOLOGY RESEARCH is an independently published journal and does not provide DOIs for their research articles.   
+
+However, a DOI for the AMERICAN NATURALIST study is available, and let's use it to fetch the PDF.
+
+```{r eval=FALSE}
+# load package
+PDF_download("10.1086/319928", theFileName = "AMNAT_metagear")
+```
+
+```{r echo=FALSE}
+# load package
+tempString <- "Collecting PDF from DOI: 10.1086/319928
+  		Extraction 1 of 2: HTML script.... successful
+			Extraction 2 of 2: PDF download... successful"
+cat(tempString)
+```
+
+The downloader provides information on the download success, and in this case a PDF was successfully retrieved.  It was saved in the working directory of the **R** process (to see this directory use `getwd()`).
+
+Now let's try downloading all the PDFs from our reference dataset.  This can be done using the `PDFs_collect()` function.
+
+```{r eval=FALSE}
+# (optional) initialize the reference dataset to help generate standardized fileNames (e.g., STUDY_ID numbers)
+theRefs <- effort_initialize(example_references_metagear)
+# fetch the PDFs
+PDFs_collect(theRefs, DOIcolumn = "DOI", FileNamecolumn = "STUDY_ID", directory = getwd())
+```
+
+```{r echo=FALSE}
+#TEMPORARY: vignette generation does not allow for downloads
+tempRes <- "Collecting PDF from DOI: 10.1016/j.bbrc.2011.10.017
+  		Extraction 1 of 2: HTML script.... successful
+			Extraction 2 of 2: PDF download... successful
+Collecting PDF from DOI: NA
+			Extraction 1 of 2: HTML script.... cannot open: HTTP status was '404 Not Found'
+			Extraction 2 of 2: PDF download... skipped
+Collecting PDF from DOI: 10.1086/319928
+			Extraction 1 of 2: HTML script.... successful
+			Extraction 2 of 2: PDF download... successful
+Collecting PDF from DOI: 10.1016/j.gene.2008.01.009
+			Extraction 1 of 2: HTML script.... successful
+			Extraction 2 of 2: PDF download... successful
+Collecting PDF from DOI: 10.1007/s11262-012-0864-0
+			Extraction 1 of 2: HTML script.... successful
+			Extraction 2 of 2: PDF download... successful
+Collecting PDF from DOI: 10.2983/035.029.0428
+			Extraction 1 of 2: HTML script.... successful
+			Extraction 2 of 2: PDF download... successful
+Collecting PDF from DOI: NA
+			Extraction 1 of 2: HTML script.... cannot open: HTTP status was '404 Not Found'
+			Extraction 2 of 2: PDF download... skipped
+Collecting PDF from DOI: 10.1016/S0883-2927(02)00054-9
+			Extraction 1 of 2: HTML script.... successful
+			Extraction 2 of 2: PDF download... successful
+Collecting PDF from DOI: NA
+			Extraction 1 of 2: HTML script.... cannot open: HTTP status was '404 Not Found'
+			Extraction 2 of 2: PDF download... skipped
+Collecting PDF from DOI: 10.1023/A:1012426306493
+			Extraction 1 of 2: HTML script.... successful
+			Extraction 2 of 2: PDF download... successful
+Collecting PDF from DOI: 10.1016/j.ygeno.2013.09.002
+			Extraction 1 of 2: HTML script.... successful
+			Extraction 2 of 2: PDF download... successful
+
+PDF download summary
+	 8 = downloaded
+	 3 = URL error
+	Downloads located in: C:/Users/lajeunesse@usf.edu/Documents"
+
+cat(tempRes)
+```
+
+Eight of the 11 references had successful PDF downloads; the remaining 3 did not have DOIs available.  These PDFs will need to be checked to determine if their contents are the desired research articles.  Also note that the downloading process will take time, and in general, it will take ~ 45 seconds to detect and download a single PDF.
+
+---
+
+# Automated extraction of data from scatterplots
+
+Extracting data from a figure image is a common challenge when trying to extract outcomes (effect sizes) from a study.  The scrapping (reverse engineering) of data points from a scatterplot image can be automated with **metagear**.
+
+**In these examples, we have the following goals:**
+
+1. Extract data points from an image containing a scatterplot using the `figure_scatterPlot()` default parameters.
+2. Tweak the parameters to extract data from scatterplots with various formats (e.g., different point shapes, or image sizes).
+
+## Example 1 | figure_scatterPlot() default settings
+
+**Metagear** offers a pre-packaged scatterplot image, and so let's begin with extracting data from this image, before moving to more advanced applications of `figure_scatterPlot()`.  First, let's load and display the image.
+
+```{r}
+# load metagear package and .jpg image manipulation package EBImage
+library(metagear)
+library(EBImage)
+# load the scatterplot image, source: Kam et al. (2003) Functional Ecology 17:496-503.
+data(Kam_et_al_2003_Fig2)
+# display the image
+figure_display(Kam_et_al_2003_Fig2) 
+```
+
+Now let's use `figure_scatterPlot()` to scrape data from this image; however, because `Kam_et_al_2003_Fig2` is pre-packaged with **metagear** it needs to be converted back to a .jpg before the image can be processed.  
+
+The `figure_scatterPlot()` will by default output three objects: 
+
+2. The estimated regression fit of these detected points, as well as the estimated effect size and variance of the correlation presented in the figure.
+1. A raster image of the detected objects painted over the original image.  Blue spheres are detected points, orange spheres are detected clusters of points that could not be separated, the X-axis in pink, and the Y-axis in green.  The points and axes can also be extracted individually using the `figure_detectAllPoints()` and `figure_detectAxis()` functions.
+3. The X and Y data from each detected point on the image, and information on whether that point was identified as a cluster.
+
+Here are the results of using `figure_scatterPlot()` on Kam et al.'s (2002) figure.
+
+```{r}
+# convert back to .jpg
+figure_write(Kam_et_al_2003_Fig2, file = "Kam_et_al_2003_Fig2.jpg")
+# load the scatterplot image, source: Kam et al. (2003) Functional Ecology 17:496-503.
+rawData <- figure_scatterPlot("Kam_et_al_2003_Fig2.jpg") 
+```
+
+```{r,echo=FALSE,results="hide"}
+# HIDDEN: clean up generated image file
+file.remove("Kam_et_al_2003_Fig2.jpg")
+```
+
+The estimated regression coefficients are very similar to those originally reported by Kam et al.'s (2002) study; which were Y = 12.03 + 0.907 * X with an R2 = 0.59 and a sample size of N = 51.
+
+## Example 2 | tweaking defaults for image size
+
+Now let's try to extract data from another image.  This time the figure is relatively small and `figure_scatterPlot()` will need some adjustments based on this size difference.  Also, this time we will scale the data extractions to the X- and Y-axis scale; this is useful to calculate the original regression coefficients.  Here, the minimum and maximum presented in the figure for the X-axis is 0 to 50, and 0 to 70 for the Y-axis.  However, note that re-scaling the data does not affect the effect size calculated from the figure, only the estimated regression coefficients.  Let's download the image first from my website and then process it.
+
+```{r, fig.height=4.4722,fig.width=3.56}
+# download the figure image from my website
+figureSource <- "http://lajeunesse.myweb.usf.edu/metagear/example_2_scatterPlot.jpg"
+download.file(figureSource, "example_2_scatterPlot.jpg", quiet = TRUE, mode = "wb")
+aFig <- figure_read("example_2_scatterPlot.jpg", display = TRUE)
+# because of the small size of the image the axis parameter needed adjustment from 5 to 3
+rawData2 <- figure_scatterPlot("example_2_scatterPlot.jpg",  
+                               axis_thickness = 3, # adjusted from 5 to 3 to help detect the thin axis
+                               X_min = 0, # minimum X-value reported in the plot
+                               X_max = 50, # maximum X-value reported in the plot
+                               Y_min = 0,
+                               Y_max = 70)
+```
+```{r,echo=FALSE,results="hide"}
+# HIDDEN: clean up downloaded image file
+file.remove("example_2_scatterPlot.jpg")
+```
+In this example, because of the small size of the figure, the axis_thinkness parameter needed to be reduced from 5 to 3.  This was sufficient to detect the axis lines and extract the plotted data.
+
+## Example 3 | more tweaking based on color, size, and empty points
+
+In this figure example, we have the case where the image is large (1122px by 780px), the plotted points are large but empty, and the axis lines are thin and grey.  All of these issues complicate object detection on the figure.    
+
+```{r,fig.height=6.95,fig.width=10.0}
+# download the figure image from my website
+figureSource <- "http://lajeunesse.myweb.usf.edu/metagear/example_3_scatterPlot.jpg"
+download.file(figureSource, "example_3_scatterPlot.jpg", quiet = TRUE, mode = "wb")
+aFig <- figure_read("example_3_scatterPlot.jpg", display = TRUE)
+# tweaking the figure_scatterPlot() function to improve object detection
+rawData3 <- figure_scatterPlot("example_3_scatterPlot.jpg",
+                               binary_point_fill = TRUE, # set to TRUE to fill empty points
+                               point_size = 9, # increase from 5 to 9 since points are large
+                               binary_threshold = 0.8, # increase from 0.6 to 0.8 to include the grey objects
+                               axis_thickness = 3, # decrease from 5 to 3 since axes are thin
+                               X_min = 0,
+                               X_max = 800,
+                               Y_min = 0,
+                               Y_max = 35)
+```
+
+```{r,echo=FALSE,results="hide"}
+# HIDDEN: clean up downloaded image file
+file.remove("example_3_scatterPlot.jpg")
+```
+
+It looks like `figure_scatterPlot()` confused some of the regression summary text on the plot for points.  This can be avoided by erasing all superfluous information on the figure prior to processing with `figure_scatterPlot()`.  However, in our case we are interested in estimating these reported regression coefficients.  We can quickly exclude these false detections since they reside within a specific range on the plot that does not include data (e.g., values above 25 for Y, and below 305 for X).
+
+```{r}
+# remove false detected points from the regression summary presented within the plot
+cleaned_rawData3 <- rawData3[ which(!(rawData3$X < 350 & rawData3$Y > 25)), ]
+# estimate the regression coefficients
+lm(Y ~ X, data = cleaned_rawData3)
+# and get R-squared
+round(summary(lm(Y ~ X, data = cleaned_rawData3))$r.squared, 4)
+```
+
+The estimated regression coefficients are very similar to those presented within the plot.
+
+
+# Automated extraction of data from bar plots
+
+[Bar plots (or bar charts)](https://en.wikipedia.org/wiki/Bar_chart) are a common way to present information in groups or categories.
+
+**In these examples, we have the following goals:**
+
+1. Extract data points from an image containing a bar plot using the `figure_barPlot()` default parameters.
+2. Tweak the parameters to extract data from bar plots with various formats (e.g., with bars with different shading indicating different groups, or bars presented horizontally rather than vertically).
+
+## Example 1 | figure_barPlot() default settings
+
+Let's have a look at the bar plot image provided by **metagear** called `Kortum_and_Acymyan_2013_Fig4`; originally extracted from Kortum & Acymyan (2013;  Journal of Usability Studies 9:14-24).
+
+```{r}
+# load metagear package
+library(metagear)
+# load the scatterplot image, source: Kortum & Acymyan (2013) J. of Usability Studies 9:14-24).
+data(Kortum_and_Acymyan_2013_Fig4)
+# display the image
+figure_display(Kortum_and_Acymyan_2013_Fig4)
+```
+
+Manual extraction of the bars and their errors will be time consuming here given that there are 42 separate data points to be gathered (i.e. 14 bars each with upper and lower error bars).   Let's use `figure_barPlot()` with its default options to extract these 42 points.   
+
+```{r}
+# convert metagear image object back to .jpg and then extract objects from this .jpg
+figure_write(Kortum_and_Acymyan_2013_Fig4, file = "Kortum_and_Acymyan_2013_Fig4.jpg")
+rawData <- figure_barPlot("Kortum_and_Acymyan_2013_Fig4.jpg")
+```
+
+```{r,echo=FALSE,results="hide"}
+# HIDDEN: clean up downloaded image file
+file.remove("Kortum_and_Acymyan_2013_Fig4.jpg")
+```
+
+In the above image, the detected points for each ballot were painted in blue.  Let's have a closer look at these extracted data.
+
+```{r}
+# display extracted points
+as.vector(round(rawData, 2))
+```
+**Metagear** is not clever enough to know what groupings these extractions belong too; however, the extractions will be sorted relative to their axis positioning.  For example, there are three extractions that occupy the same X-axis range under the A ballot column.  These three extractions will be grouped together in the `figure_barPlot()` output.  With this in mind, a little data manipulation is needed to make better sense of these ballot data.
+
+```{r}
+# extractions are in triplicates with an upper, mean, and lower values, so let's
+# stack by three and sort within triplicates from lowest to highest
+organizedData <- t(apply(matrix(rawData, ncol = 3, byrow = TRUE), 1, sort))
+# rename rows and columns of these triplicates as presented in Kortum_and_Acymyan_2013_Fig4.jpg
+theExtraction_names <- c("lower 95%CI", "mean SUS score", "upper 95%CI")
+theBar_names <- toupper(letters[1:14])
+dimnames(organizedData) <- list(theBar_names, theExtraction_names)
+organizedData
+```
+
+## Example 2 | tweaking defaults for horizontal columns
+
+Now let's try to extract data from another image where bar-plot is presented horizontally (i.e. bars stem from the Y-axis). 
+
+```{r}
+# download the figure image from my website
+figureSource <- "http://lajeunesse.myweb.usf.edu/metagear/example_2_barPlot.jpg"
+download.file(figureSource, "example_2_barPlot.jpg", quiet = TRUE, mode = "wb")
+aFig <- figure_read("example_2_barPlot.jpg", display = TRUE)
+rawData2 <- figure_barPlot("example_2_barPlot.jpg",  
+                            horizontal = TRUE, # changed from FALSE since bars are horizontal
+                            bar_width = 11, # raised from 9 since bars are wide relative to the figure
+                            Y_min = 0,
+                            Y_max = 10)
+```
+```{r,echo=FALSE,results="hide"}
+# HIDDEN: clean up downloaded image file
+file.remove("example_2_barPlot.jpg")
+```
+
+The function also detected the right-most vertical line (part of the the figure box) as a datapoint.  The options of `figure_barPlot()` can be tweaked to avoid this issue; however, it might be easier to just exclude this extraction given that it has the largest plant biomass value (i.e. close to 10).  Let's exclude this false datapoint and organize the dataset as presented in the figure.
+
+```{r}
+# exclude the false detection
+rawData2 <- rawData2[rawData2 < max(rawData2)]
+# data are in triplicates with an upper, mean, and lower values, so let's
+# stack by three and sort within triplicates from lowest to highest
+organizedData <- t(apply(matrix(rawData2, ncol = 3, byrow = TRUE), 1, sort))
+# rename rows and columns of these triplicates as presented in the figure
+theExtraction_names <- c("lower error", "bar", "upper error")
+theBar_names <- c("exclosure", "water", "fertilizer", "control")
+dimnames(organizedData) <- list(theBar_names, theExtraction_names)
+organizedData
+```
+
+
+---
+
+# Meta-analysis with multiple effect sizes that share a common control
+
+Typically an effect size quantified with a response ratio uses the means (X), standard deviations (SD), and sample sizes (N) from single control (C) and treatment (T) groups.  However, some studies will compare multiple treatment groups to a single control. 
+
+Here we will replicate the meta-analysis example presented in Lajeunesse (2011; Ecology 92, 2049-2055) for modeling effect sizes that share a common control.
+
+```{r}
+# load metagear package
+library(metagear)
+# get dataset from my website
+dataSource <- "http://lajeunesse.myweb.usf.edu/metagear/Lajeunesse_2011_commonControl.csv"
+theData <- read.csv(dataSource, header = TRUE)
+# calculate response ratios (RR) and add these effect sizes to the dataset
+theData$RR <- log(theData$X_T/theData$X_C)
+# display effect sizes as reported by Lajeunesse (2011; page 2052, second paragraph)
+round(theData$RR, 3)
+```
+
+These three RR effect sizes share a common control.  The next step is to model the covariances (the dependencies) among these effect sizes using the **metagear**'s `covariance_commonControl()` function.  There will be a list of two objects outputted from this function, the first will be the variance-covariance matrix that models the dependencies among effect sizes, and the second is the effect size dataset that is aligned with the structure of this matrix.  Let's now compute and display the matrix. 
+
+```{r}
+# estimate the sample variance-covariance (VCV) matrix that models the common control relationships among RR
+V <- covariance_commonControl(theData, "commonControl_ID", "X_T", "SD_T", "N_T", "X_C", "SD_C", "N_C", metric = "RR")
+# display the VCV matrix with rounded variances and covariances
+round(V[[1]], 3)
+```
+
+Note the off-diagonals of the matrix are non-zero; this structure models the shared variance (covariance) among the three effect sizes due to the common control.  The equation for the common-control covariance is simple: (X_C ^ 2) / N_C .  
+
+Now let's use this matrix to model the dependent effect sizes in a meta-analysis.  Here we will conduct a simple fixed-effect meta-analysis as presented by Lajeunesse (2011) using the **metafor** R package.
+
+```{r}
+# perform a random-effects meta-analysis on these effect sizes using the metafor R package
+suppressWarnings(suppressMessages(library(metafor))) # remove all messages when loading package
+theCovarianceMatrix <- V[[1]]
+theAlignedData <- V[[2]]
+rma.mv(RR, # a simple model that only pools the 3 effect sizes
+       V = theCovarianceMatrix, # inclusion of the sample VCV matrix
+       data = theAlignedData, # the dataset with the effect sizes
+       method = "FE", # "FE" = fixed effect
+       digits = 4) 
+```
+
+The pooled effect size sharing a common control was 0.41 with a variance of 0.0556 (converting SE to variance with 0.2356 ^ 2).

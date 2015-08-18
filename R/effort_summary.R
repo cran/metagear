@@ -4,7 +4,7 @@
 #' included/excluded from the project, as well as those with conflicting
 #' agreement on their inclusion/exclusion.  If a dual (paired) design was 
 #' implemented to screen references, then it also provides inter-reviewer 
-#' agreement estimate following Cohen (1960) that describes the aggreement (or 
+#' agreement estimate following Cohen (1960) that describes the agreement (or 
 #' repeatability) of screening/coding decisions.     
 #'
 #' @param aDataFrame A data.frame containing the titles and abstracts that were 
@@ -32,6 +32,7 @@
 #' @references Landis, J.R., and Koch, G.G. 1977. The measurement of observer 
 #'    agreement for categorical data. Biometrics 33: 159-174.
 #'
+#' @importFrom stats addmargins
 #' @export effort_summary
 
 
@@ -100,7 +101,7 @@ effort_summary <- function(aDataFrame,
     aTable <- (addmargins(table(aDataFrame[, c(column_reviewers, column_effort)]), FUN = list(TOTAL = sum), quiet = TRUE))
     names(dimnames(aTable)) <- c("", "")
     aTable <- as.data.frame.matrix(aTable)
-    aTable["%"] <- (prop.table(aTable)*(nrow(aTable) * 100))[, nrow(aTable)]
+    aTable["%"] <- (aTable["TOTAL"] / aTable[nrow(aTable), "TOTAL"]) * 100
   }
   
   if(quiet == FALSE) {

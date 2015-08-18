@@ -9,13 +9,13 @@ figure_removeOutlyingPoints(aDetectedPlot, xAxis = NULL, yAxis = NULL)
 \arguments{
 \item{aDetectedPlot}{A binary figure image with detected points (an
 \code{EBImage} object).
-See: \code{figure_detectAllPoints}}
+See: \code{\link{figure_detectAllPoints}}}
 
-\item{xAxis}{A binary figure image with detected X-axis (an EBImage object).
-See: \code{figure_detectAxis}}
+\item{xAxis}{A binary figure image with detected X-axis (an \code{EBImage} object).
+See: \code{\link{figure_detectAxis}}}
 
-\item{yAxis}{A binary figure image with detected Y-axis (an EBImage object).
-   See: \code{figure_detectAxis}}
+\item{yAxis}{A binary figure image with detected Y-axis (an \code{EBImage} object).
+   See: \code{\link{figure_detectAxis}}}
 }
 \value{
 An \code{EBImage} object with detected points within the specified X-

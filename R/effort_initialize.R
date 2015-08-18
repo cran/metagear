@@ -17,7 +17,7 @@
 #' @param dual When \code{TRUE}, formats dataFrame for a dual screening (paired)
 #'    design.  Creates two reviewer teams: REVIEWERS_A and REVIEWERS_B.    
 #' @param front When \code{FALSE}, adds new columns to the back end of the
-#'    dataframe.  When \code{FALSE}, adds columns to the front.     
+#'    dataframe.  When \code{TRUE}, adds columns to the front.     
 #'
 #' @return A data.frame formatted for title/abstract screening efforts.
 #'

@@ -8,7 +8,7 @@ impute_missingness(aDataFrame)
 }
 \arguments{
 \item{aDataFrame}{A data.frame containing columns that will be assessed for
-   missignness.}
+   missingness.}
 }
 \value{
 A data frame that summarizes percent missingness for each column of

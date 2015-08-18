@@ -6,7 +6,7 @@
 #'
 #' @param K Number of paired sample sizes to generate.
 #' @param mean The lambda (dispersion parameter) of a Poisson distribution.  The
-#'    defaul is 15, which will generate sample sizes that on average will center
+#'    default is 15, which will generate sample sizes that on average will center
 #'    around N = 15.
 #' @param min A non-negative integer that specifies the minimum sample size that
 #'    can be generated.  Default is N = 3. 
@@ -16,6 +16,7 @@
 #'
 #' @return A data table of paired random sample sizes (N).
 #'
+#' @importFrom stats pnorm qpois
 #' @export random_pairedN
 
 random_pairedN <- function(K, 

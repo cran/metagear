@@ -35,7 +35,7 @@
 #' @references Lajeunesse, M.J. 2011. On the meta-analysis of response ratios for
 #'     studies with correlated and multi-group designs. Ecology 92: 2049-2055. 
 #'
-#' @import Matrix 
+#' @import Matrix
 #' @export covariance_commonControl
 
 covariance_commonControl <- function (aDataFrame, 

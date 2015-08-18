@@ -32,6 +32,7 @@
 #' @references Hedges, L.V. 1982. Estimation of effect size from a series of 
 #'    independent experiments. Psychological Bulletin 92: 490-499.
 #'
+#' @importFrom stats rnorm sd
 #' @export random_d
 
 random_d <- function(K,

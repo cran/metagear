@@ -24,7 +24,7 @@ part of the "INCLUDE" column.}
 design.  Creates two reviewer teams: REVIEWERS_A and REVIEWERS_B.}
 
 \item{front}{When \code{FALSE}, adds new columns to the back end of the
-   dataframe.  When \code{FALSE}, adds columns to the front.}
+   dataframe.  When \code{TRUE}, adds columns to the front.}
 }
 \value{
 A data.frame formatted for title/abstract screening efforts.

@@ -6,11 +6,11 @@
 #'
 #' @param aDetectedPlot A binary figure image with detected points (an 
 #'    \code{EBImage} object).
-#'    See: \code{figure_detectAllPoints}
-#' @param xAxis A binary figure image with detected X-axis (an EBImage object).
-#'    See: \code{figure_detectAxis}
-#' @param yAxis A binary figure image with detected Y-axis (an EBImage object).
-#'    See: \code{figure_detectAxis}
+#'    See: \code{\link{figure_detectAllPoints}}
+#' @param xAxis A binary figure image with detected X-axis (an \code{EBImage} object).
+#'    See: \code{\link{figure_detectAxis}}
+#' @param yAxis A binary figure image with detected Y-axis (an \code{EBImage} object).
+#'    See: \code{\link{figure_detectAxis}}
 #'
 #' @return An \code{EBImage} object with detected points within the specified X-
 #'    and Y-axis ranges.

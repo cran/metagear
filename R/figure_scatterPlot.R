@@ -2,7 +2,7 @@
 #'
 #' Automated detection of the X-axis, Y-axis, and points on a scatter-plot
 #' figure image.  The default returns these detected objects as an 
-#' \code{EBImage} raster imgae, as well as the estimated effect size (correlation
+#' \code{EBImage} raster image, as well as the estimated effect size (correlation
 #' coefficient or r) of the data within the scatter-plot.    
 #'
 #' @param file The file name and location of a scatter plot figure.  Prompts
@@ -50,6 +50,7 @@
 #' @return A data frame with detected points.
 #' 
 #' @importFrom EBImage readImage display rmObjects Image
+#' @importFrom stats sd
 #' @export
 
 figure_scatterPlot <- function (file = file.choose(),

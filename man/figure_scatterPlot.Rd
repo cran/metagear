@@ -76,7 +76,7 @@ A data frame with detected points.
 \description{
 Automated detection of the X-axis, Y-axis, and points on a scatter-plot
 figure image.  The default returns these detected objects as an
-\code{EBImage} raster imgae, as well as the estimated effect size (correlation
+\code{EBImage} raster image, as well as the estimated effect size (correlation
 coefficient or r) of the data within the scatter-plot.
 }
 

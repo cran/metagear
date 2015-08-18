@@ -19,6 +19,7 @@
 #'    meta-analysis. Academic Press, New York, USA.
 #'
 #' @importFrom metafor rma
+#' @importFrom stats anova lm pchisq
 #' @export MA_effectsTable
 
 MA_effectsTable <- function(model,

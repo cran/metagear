@@ -29,7 +29,8 @@ and weights.}
 }
 \description{
 Replicate meta-analysis results and summaries from Rosenberg's et al. (2000)
-software 'MetaWin' 2.0.
+software 'MetaWin' 2.0.  Currently only replicates moderator analyses and not
+meta-regressions.
 }
 \references{
 Rosenberg, M.S., Adams, D.C., and Gurevitch, J. 2000.

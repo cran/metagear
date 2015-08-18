@@ -22,6 +22,7 @@
 #' @seealso \code{\link{PDFs_collect}}
 #'
 #' @importFrom stringr str_extract
+#' @importFrom utils download.file
 #' @export PDF_download
 
 PDF_download <- function(DOI, 

@@ -18,6 +18,7 @@
 #' browse_DOI("10.1086/603628")        
 #'}
 #'
+#' @importFrom utils browseURL
 #' @export browse_DOI
 
 browse_DOI <- function(theDOI, 

@@ -10,7 +10,7 @@ random_pairedN(K, mean = 15, min = 3, correlation = 0.95)
 \item{K}{Number of paired sample sizes to generate.}
 
 \item{mean}{The lambda (dispersion parameter) of a Poisson distribution.  The
-defaul is 15, which will generate sample sizes that on average will center
+default is 15, which will generate sample sizes that on average will center
 around N = 15.}
 
 \item{min}{A non-negative integer that specifies the minimum sample size that

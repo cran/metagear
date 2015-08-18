@@ -34,6 +34,7 @@
 #' @references Lajeunesse, M.J. 2015. Bias and correction for the log response
 #'    ratio used in ecological meta-analysis. Ecology.
 #'
+#' @importFrom stats rlnorm sd
 #' @export random_RR
 
 random_RR <- function(K,

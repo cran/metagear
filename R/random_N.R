@@ -19,6 +19,7 @@
 #'
 #' @return A vector of random sample sizes (N).
 #'
+#' @importFrom stats rnbinom rpois
 #' @export random_N
 
 random_N <- function(K, 

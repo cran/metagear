@@ -5,7 +5,7 @@
 #' of data is missing, then perhaps this is too much to impute.
 #'
 #' @param aDataFrame A data.frame containing columns that will be assessed for
-#'    missignness.  
+#'    missingness.  
 #'
 #' @return A data frame that summarizes percent missingness for each column of 
 #'    a dataset.

@@ -2,7 +2,7 @@
 #'
 #' Checks if provided file is in Portable Document Format (PDF).    
 #'
-#' @param aFileName A string that identifies a file name (and direcotry path) of
+#' @param aFileName A string that identifies a file name (and directory path) of
 #' the PDF candidate.  
 #'
 #' @return A logical value indicating whether the file is a PDF document.

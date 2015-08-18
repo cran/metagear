@@ -19,6 +19,7 @@
 #' @return A data frame with the extracted X and Y values.
 #' 
 #' @importFrom EBImage ocontour computeFeatures.moment
+#' @importFrom stats cor
 #' @export
 
 figure_extractDetectedPoints <- function (aDetectedPlot,

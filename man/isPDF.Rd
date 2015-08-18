@@ -7,7 +7,7 @@
 isPDF(aFileName)
 }
 \arguments{
-\item{aFileName}{A string that identifies a file name (and direcotry path) of
+\item{aFileName}{A string that identifies a file name (and directory path) of
 the PDF candidate.}
 }
 \value{

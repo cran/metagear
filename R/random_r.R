@@ -28,6 +28,7 @@
 #'    population. Biometrika 10: 507-521.
 #'
 #' @importFrom MASS mvrnorm
+#' @importFrom stats cor
 #' @export random_r
 
 random_r <- function(K = 100,

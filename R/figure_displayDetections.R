@@ -14,6 +14,7 @@
 #' @return A RGB \code{EBImage} painted with detected figure objects.
 #' 
 #' @importFrom EBImage paintObjects channel display
+#' @importFrom grDevices rgb col2rgb
 #' @export
 
 figure_displayDetections <- function (aDetectedPlot,

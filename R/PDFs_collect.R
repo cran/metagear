@@ -33,7 +33,8 @@
 #' }
 #'
 #' @seealso \code{\link{PDF_download}}
-#' 
+#'
+#' @importFrom utils download.file 
 #' @export PDFs_collect
 
 PDFs_collect <- function(aDataFrame, 

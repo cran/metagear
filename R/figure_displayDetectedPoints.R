@@ -17,6 +17,7 @@
 #' @seealso \link{figure_displayDetections}
 #' 
 #' @importFrom EBImage computeFeatures.moment channel drawCircle display
+#' @importFrom grDevices rgb col2rgb
 #' @export
 
 figure_displayDetectedPoints <- function (aDetectedPlot,
