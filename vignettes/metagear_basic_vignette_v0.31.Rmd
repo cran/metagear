@@ -1,17 +1,17 @@
 
-
 ---
-title: Basic examples of screening studies, extracting data, and meta-analysis with
-  the *metagear* package for R
+title: <p><br></p>Basic examples of screening studies, extracting data and meta-analysis
+  with the ***metagear*** package for *R* <p><br></p>
 author: '[Marc J. Lajeunesse](http://lajeunesse.myweb.usf.edu/)'
-date: "University of South Florida, August 5th 2015 (for metagear v. 0.2)"
+date: University of South Florida, January 3rd 2017 (vignette v. 0.3.1 for metagear
+  v. 0.3) <p><br></p>   <p><br></p>
 output:
-  html_document:
-    smart: no
-    toc: yes
   pdf_document:
     keep_tex: yes
     latex_engine: xelatex
+    toc: yes
+  html_document:
+    smart: no
     toc: yes
   word_document: default
 ---
@@ -21,18 +21,74 @@ output:
 options(width = 800)
 ```
 
--------
+<p><br></p>
+<center>![Section Break](http://lajeunesse.myweb.usf.edu/metagear/Dots_Divider.png)</center>
+<p><br></p>
+
 
 # Introduction
+
+------
+
 The **metagear** package for [R](http://www.r-project.org/) contains tools for facilitating [systematic reviews](https://en.wikipedia.org/wiki/Systematic_review), data extraction, and [meta-analyses](https://en.wikipedia.org/wiki/Meta-analysis).  It aims to facilitate research synthesis as a whole, by providing a single source for several of the common tasks involved in screening studies, extracting outcomes from studies, and performing statistical analyses on these outcomes using meta-analysis.  Below are a few illustrative examples of applications of these functionalities.  
 
-Updates to these examples will be posted on our [research webpage at USF](http://lajeunesse.myweb.usf.edu/).
+Updates to these examples will be posted on our [research webpage at USF](http://lajeunesse.myweb.usf.edu/), and for previous versions of this vignette see [v. 0.2](http://lajeunesse.myweb.usf.edu/metagear/metagear_basic_vignette_v0.2.html) and [v. 0.1](http://lajeunesse.myweb.usf.edu/metagear/metagear_basic_vignette_v0.1.html).
 
 For the source code of **metagear** see: <http://cran.r-project.org/web/packages/metagear/index.html>.
 
----
+<p><br></p>
+
+### Acknowledgements
+
+<img src="http://lajeunesse.myweb.usf.edu/metagear/nsf_logo.png" alt="" style="width:100px;height:100px;margin:0px 20px;" align="left">
+<br>
+Funding for **metagear** is supported by *National Science Foundation* (NSF) grants DBI-1262545 and DEB-1451031. 
+
+I also thank J. Richardson, J. Zydek, N. Ogburn, B. MacNeill, J. Zloty, and my colleagues in the [OpenMEE](http://www.cebm.brown.edu/openmee/) software team, J. Gurevitch and B. Wallace, for persuading me to develop tools in *R*. 
+
+<p><br></p>
+
+### How to cite?
+
+<p style = "text-indent: -30pt; margin-left:60pt; margin-right:60pt;">
+Lajeunesse, M.J. (2016) Facilitating systematic reviews, data extraction and meta-analysis with the *metagear* package for *R*.  *Methods in Ecology and Evolution* **7**: 323-330. [article link](http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12472/abstract)
+</p>
+
+<p><br></p>
+
+### Installation and Dependencies
+**Metagear** has several dependencies that need to be installed and loaded prior to use in R.  The first is the **EBImage** R package (Pau *et al.* 2010) available only from [Bioconductor](https://www.bioconductor.org) repository.  The second is associated with **metagear**'s `abstract_screener()` function that generates a GUI to help quickly sift bibliographic data from multiple studies. 
+
+To properly install **metagear**, use the following script in R:
+
+```{r eval=FALSE}
+# first load Bioconductor resources needed to install the EBImage package 
+# and accept/download all of its dependencies
+source("https://bioconductor.org/biocLite.R")
+biocLite("EBImage")
+
+# then load metagear
+library(metagear)
+```
+
+The first loading of **metagear** using `library(metagear)` will trigger the download of the **gWidgets** package and associated toolkits needed to build GUI interfaces. A small window will also prompt you to download GTK+ asking "Need GTK+ ?". From the listed options answer: "Install GTK+" and click ’OK’. Once installed, these will not be downloaded again. 
+
+Sometimes there is an issue with the installation of GTK+, see [here](http://www.learnanalytics.in/blog/?p=31) or  [here](http://lajeunesse.myweb.usf.edu/metagear/Installing_ Rattle.pdf) for advice based on the **Rattle** R Package. Note that both **Rattle** and **metagear** use the same GUI dependencies.  **Also sometimes the installation will freeze; however, re-starting the R session can fix this issue.**
+
+<p><br></p>
+
+### Report a bug? Have comments or suggestions?
+
+Please email me any bugs, comments, or suggestions and I'll try to include them in future releases: <lajeunesse@usf.edu>.  Also try to include **metagear** in the subject heading of your email.  Finally, I'm open to almost anything, but expect a lag before I respond and/or new additions are added.
+
+<p><br></p>
+<center>![Section Break](http://lajeunesse.myweb.usf.edu/metagear/Dots_Divider.png)</center>
+<p><br></p>
 
 # Delegating reference screening effort to a team
+
+---
+
 One of the first tasks of a systematic review is to screen the titles and abstracts of study references to assess their relevance for the synthesis project.  For example, after a [bibliographic search](https://en.wikipedia.org/wiki/Bibliographic_database) using Web of Science, there may be thousands of references generated; references from experimental studies, modeling studies, review papers, commentaries, etc.  These need to be reviewed individually as a first pass to exclude those that do not fit the synthesis project; such as excluding simulation studies that do not report experimental outcomes useful for estimating an [effect size](https://en.wikipedia.org/wiki/Effect_size).  
 
 However, individually screening thousands of references is time consuming, and large synthesis projects may benefit from delegating this screening effort to a research team.  Having multiple people screen references also provides an opportunity to assess the repeatability of these screening decisions.   
@@ -133,7 +189,8 @@ lapply(list.files(getwd(), pattern = "effort"),
 ```
 
 ```{r}
-# merge the effort_Luc.csv and effort_Christina.csv [WARNING: will merge all files named "effort_*" in directory]
+# merge the effort_Luc.csv and effort_Christina.csv 
+# WARNING: will merge all files named "effort_*" in directory
 theRefs_screened <- effort_merge()
 theRefs_screened[c("STUDY_ID", "REVIEWERS", "INCLUDE")]
 theSummary <- effort_summary(theRefs_screened)
@@ -146,11 +203,132 @@ lapply(c("effort_Luc.csv", "effort_Christina.csv"), file.remove)
 
 The summary of screening tasks describes the outcomes of which references had studies appropriate for the synthesis project, while also outlining which need to be re-assessed.  The team should discuss these challenging references and decide if they are appropriate for inclusion or track down any additional/missing information needed to make proper assessment of their inclusion. 
 
+<p><br></p>
+<center>![Section Break](http://lajeunesse.myweb.usf.edu/metagear/Dots_Divider.png)</center>
+<p><br></p>
+
+# Screening abstracts of references
+
 ---
+
+**Metagear** offers a simple abstract screener to quickly sift through the abstracts and titles of multiple references.  Here is some script to help initialize the screener GUI in R:
+
+```{r eval=FALSE}
+# load package
+library(metagear)
+
+# initialize bibliographic data and screening tasks
+data(example_references_metagear)
+effort_distribute(example_references_metagear, initialize = TRUE, reviewers = "marc", save_split = TRUE)
+
+# initialize screener GUI
+abstract_screener("effort_marc.csv", aReviewer = "marc")
+```
+
+The GUI itself will appear as a single window with the first title/abstract listed in the .csv file. If abstracts have already been screened/coded, it will begin at the nearest reference labeled as "not vetted". The SEARCH WEB button opens the default browser and searches Google with the title of the reference. The YES, MAYBE, NO buttons, which also have shortcuts ALT-Y and ALT-N, are used to code the inclusion/exclusion of the reference. Once clicked/coded the next reference is loaded. The SAVE button is used to save the coding progress of screening tasks. It will save coding progress directly to the loaded .csv file. **Closing the GUI and not saving will result in the loss of screening efforts relative to last save.**
+
+Here's what to expect with this GUI (note that depending on the platform running *R*, the layout of this GUI will differ slightly):
+<center>![Metagear Abstract Screener GUI](http://lajeunesse.myweb.usf.edu/metagear/metagear_Abstract_Screener.png)</center>
+
+<p><br></p>
+<center>![Section Break](http://lajeunesse.myweb.usf.edu/metagear/Dots_Divider.png)</center>
+<p><br></p>
+
+
+# Workflow example
+
+---
+
+Here I provide a quick example of extracting effect size data from a journal article PDF.
+
+**In this example, we have the following goals:**
+
+1. Get the DOI from a study reference. 
+2. Use this DOI to download a PDF of the journal article.
+3. Extract all the figures from this PDF.
+4. And finally, extract the effect size from one of these figures.
+
+First, let's start by using one of the DOIs from the pre-packaged **metagear** dataset that contains the bibliographic information of 11 journal articles (`example_references_metagear`).  These data are a subset of references generated from a search in Web of Science for "Genome size", and contain the abstracts, titles, volume, page numbers, and authors of these references. 
+
+```{r}
+# load package
+library(metagear)
+# load a bibliographic dataset with the DOIs
+data(example_references_metagear)
+# display one of the DOI's reference
+theBiblio <- scrape_bibliography(example_references_metagear$DOI[4])
+```
+
+Our next goal is to download a PDF of the Ruas et al.'s (2008) journal article and then extract its figures.
+
+```{r}
+# locate and download a PDF of this journal article
+PDF_download(example_references_metagear$DOI[4], theFileName = "Ruas_2008")
+```
+
+A PDF was found, successfully downloaded, and saved as "Ruas_2008.pdf".  Next let's extract the figures from this PDF and select the one with potential effect size data.  Here we will extract and save the figures as image files (jpegs), and then plot each one to see which is a regression figure.
+
+```{r}
+# extract figures from the PDF
+imageFiles <- PDF_extractImages("Ruas_2008.pdf")
+
+# plot all figures with file names
+par(mfrow=c(2,3), las = 1)
+for(i in 1:6) {
+  figure_display(imageFiles[i])
+  mtext(imageFiles[i], col = "red", cex = 1.2)
+}
+```
+
+It seems like the file "Ruas_2008_bin_4.jpg" is a regression plot; let's try to extract the effect size (correlation coefficient) from this regression.
+
+```{r}
+# plot the regression figure
+figure_display("Ruas_2008_bin_4.jpg")
+# extract the correlation coefficient
+rawData <- figure_scatterPlot("Ruas_2008_bin_4.jpg")
+```
+
+Well... regression points were detected using the default settings of `figure_scatterPlot`, but so were many more objects.  Let's change the settings to detect diamond points rather than circles, and let's also increase the point size since the figure image is large. 
+
+```{r}
+# plot the regression figure
+rawData <- figure_scatterPlot("Ruas_2008_bin_4.jpg", 
+                              point_shape = "diamond", # circle shapes to diamonds
+                              point_size = 5) # increase from 3 to 5 in size
+```
+
+The regression point detection was much more successful here, and although some detections were flagged as potential errors, every point in the figure was detected.  Further, the estimated regression coefficients were very similar to those reported within the figure. To get better coefficients it is necessary to explicitly define the scale of each axis scale as follows (however note that the correlation coefficient will not change):
+
+```{r}
+# plot the regression figure
+rawData <- figure_scatterPlot("Ruas_2008_bin_4.jpg", 
+                              point_shape = "diamond", # circle shapes to diamonds
+                              point_size = 5, # increase from 3 to 5 in size
+                              X_min = 0.12,
+                              X_max = 0.52,
+                              Y_min = 1.8,
+                              Y_max = 7.2)
+```
+
+```{r,echo=FALSE,results="hide"}
+# HIDDEN: clean up downloaded PDF and all extracted image files
+theList <- list.files(pattern = "Ruas_2008")
+lapply(theList, file.remove)
+```
+
+The estimated coefficients are not as reported; perhaps they are reversed in the figure or there are data points not present in the figure and these are found outside the visual range of each axis.
+
+<p><br></p>
+<center>![Section Break](http://lajeunesse.myweb.usf.edu/metagear/Dots_Divider.png)</center>
+<p><br></p>
+
 
 # Downloading PDFs
 
-Once references have been screened, **metagear** can be used to download and organize the full-texts of these references.  However, note that the download success of these PDFs is entirely conditional on the journal subscription coverage of the host institution running **metagear**.  Also note that **metagear** only supports the download of a PDF article if the DOI (digital object identifier) is available for that article. 
+---
+
+Once references have been screened, **metagear** can be used to download and organize the full-texts of these references.  However, note that the download success of these PDFs is entirely conditional on the journal subscription coverage of the host institution running **metagear**.  Also note that **metagear** only supports the download of a PDF article if the [DOI (digital object identifier)](https://en.wikipedia.org/wiki/Digital_object_identifier) is available for that article. 
 
 **In this example, we have the following goals:**
 
@@ -168,83 +346,101 @@ data(example_references_metagear)
 example_references_metagear[c("JOURNAL", "DOI")]
 ```
 
-Note that references collected from bibliographic databases like Web of Science will often be incomplete.  For example, the study published in EVOLUTIONARY ECOLOGY RESEARCH does not have a DOI (described above as NA).  This is because EVOLUTIONARY ECOLOGY RESEARCH is an independently published journal and does not provide DOIs for their research articles.   
+Note that references collected from bibliographic databases like *Web of Science* will often be incomplete.  For example, the study published in EVOLUTIONARY ECOLOGY RESEARCH does not have a DOI (described above as NA).  This is because EVOLUTIONARY ECOLOGY RESEARCH is an independently published journal and does not provide DOIs for their research articles.   
 
 However, a DOI for the AMERICAN NATURALIST study is available, and let's use it to fetch the PDF.
 
-```{r eval=FALSE}
+```{r}
 # load package
 PDF_download("10.1086/319928", theFileName = "AMNAT_metagear")
 ```
 
-```{r echo=FALSE}
-# load package
-tempString <- "Collecting PDF from DOI: 10.1086/319928
-  		Extraction 1 of 2: HTML script.... successful
-			Extraction 2 of 2: PDF download... successful"
-cat(tempString)
+```{r,echo=FALSE,results="hide"}
+# HIDDEN: clean up generated files
+lapply(c("AMNAT_metagear.pdf"), file.remove)
 ```
 
 The downloader provides information on the download success, and in this case a PDF was successfully retrieved.  It was saved in the working directory of the **R** process (to see this directory use `getwd()`).
 
 Now let's try downloading all the PDFs from our reference dataset.  This can be done using the `PDFs_collect()` function.
 
-```{r eval=FALSE}
+```{r}
 # (optional) initialize the reference dataset to help generate standardized fileNames (e.g., STUDY_ID numbers)
 theRefs <- effort_initialize(example_references_metagear)
 # fetch the PDFs
-PDFs_collect(theRefs, DOIcolumn = "DOI", FileNamecolumn = "STUDY_ID", directory = getwd())
+collectionOutcomes <- PDFs_collect(theRefs, DOIcolumn = "DOI", FileNamecolumn = "STUDY_ID", quiet = TRUE)
+table(collectionOutcomes$downloadOutcomes)
 ```
 
-```{r echo=FALSE}
-#TEMPORARY: vignette generation does not allow for downloads
-tempRes <- "Collecting PDF from DOI: 10.1016/j.bbrc.2011.10.017
-  		Extraction 1 of 2: HTML script.... successful
-			Extraction 2 of 2: PDF download... successful
-Collecting PDF from DOI: NA
-			Extraction 1 of 2: HTML script.... cannot open: HTTP status was '404 Not Found'
-			Extraction 2 of 2: PDF download... skipped
-Collecting PDF from DOI: 10.1086/319928
-			Extraction 1 of 2: HTML script.... successful
-			Extraction 2 of 2: PDF download... successful
-Collecting PDF from DOI: 10.1016/j.gene.2008.01.009
-			Extraction 1 of 2: HTML script.... successful
-			Extraction 2 of 2: PDF download... successful
-Collecting PDF from DOI: 10.1007/s11262-012-0864-0
-			Extraction 1 of 2: HTML script.... successful
-			Extraction 2 of 2: PDF download... successful
-Collecting PDF from DOI: 10.2983/035.029.0428
-			Extraction 1 of 2: HTML script.... successful
-			Extraction 2 of 2: PDF download... successful
-Collecting PDF from DOI: NA
-			Extraction 1 of 2: HTML script.... cannot open: HTTP status was '404 Not Found'
-			Extraction 2 of 2: PDF download... skipped
-Collecting PDF from DOI: 10.1016/S0883-2927(02)00054-9
-			Extraction 1 of 2: HTML script.... successful
-			Extraction 2 of 2: PDF download... successful
-Collecting PDF from DOI: NA
-			Extraction 1 of 2: HTML script.... cannot open: HTTP status was '404 Not Found'
-			Extraction 2 of 2: PDF download... skipped
-Collecting PDF from DOI: 10.1023/A:1012426306493
-			Extraction 1 of 2: HTML script.... successful
-			Extraction 2 of 2: PDF download... successful
-Collecting PDF from DOI: 10.1016/j.ygeno.2013.09.002
-			Extraction 1 of 2: HTML script.... successful
-			Extraction 2 of 2: PDF download... successful
-
-PDF download summary
-	 8 = downloaded
-	 3 = URL error
-	Downloads located in: C:/Users/lajeunesse@usf.edu/Documents"
-
-cat(tempRes)
+```{r,echo=FALSE,results="hide"}
+# HIDDEN: clean up generated files
+lapply(c("1.pdf", "3.pdf", "4.pdf", "5.pdf", "6.1.pdf", "6.2.pdf", "8.pdf", "10.pdf", "11.pdf"), file.remove)
 ```
 
 Eight of the 11 references had successful PDF downloads; the remaining 3 did not have DOIs available.  These PDFs will need to be checked to determine if their contents are the desired research articles.  Also note that the downloading process will take time, and in general, it will take ~ 45 seconds to detect and download a single PDF.
 
+<p><br></p>
+<center>![Section Break](http://lajeunesse.myweb.usf.edu/metagear/Dots_Divider.png)</center>
+<p><br></p>
+
+
+# Scraping *Web of Science* for bibliographic data
+
 ---
 
+**Metagear** can also [scrape](https://en.wikipedia.org/wiki/Web_scraping) *Web of Science* (WOS) for bibliographic data if the [DOI (digital object identifier)](https://en.wikipedia.org/wiki/Digital_object_identifier) of a study is available.  Currently, only the authors, title, publication year, journal, issue, page numbers, number of references, number of citations, and the journal impact factor (and year released) are fetched for a study.  By default, `scrape_bibliography()` will print an MLA-like formatted citation of the article.
+
+For example, let's quickly scrape WOS for Carmona *et al.*’s (2011) reference and its number of citations.  
+
+```{r}
+# load package
+library(metagear)
+# display the DOI's reference and number of citations
+theBiblio <- scrape_bibliography("10.1111/j.1365-2435.2010.01794.x")
+# number of citations
+print(paste(theBiblio$N_citations, "citations as of", theBiblio$date_scraped))
+```
+
+<p><br></p>
+<center>![Section Break](http://lajeunesse.myweb.usf.edu/metagear/Dots_Divider.png)</center>
+<p><br></p>
+
+# Generating PRISMA plots
+
+---
+
+[PRISMA plots (preferred reporting items for systematic reviews and meta-analyses)](https://en.wikipedia.org/wiki/Preferred_reporting_items_for_systematic_reviews_and_meta-analyses), or PRISMA flow diagrams, are an important and simple way to present the flow of information on how studies were found, collated, and screened for systematic reviews and meta-analysis (Liberati *et al.* 2009).  Generally, they depict from top to bottom the original number of studies identified through bibliographic databases (and other sources) and how this population of studies was culled for inclusion into the synthesis project.  
+
+**Metagear** offers an easy way to generate PRISMA plots, this requires a list of the 'phases' of the screening process.  It also requires certain phases to be labeled to properly depict the start (with the string `START_PHASE:`) and exclusion (string `EXCLUDE_PHASE:`) phases of the flow diagram.  Below is a quick example.
+
+```{r, fig.height=9,fig.width=10}
+# load package
+library(metagear)
+
+phases <- c("START_PHASE: # of studies identified through database searching",
+            "START_PHASE: # of additional studies identified through other sources",
+            "# of studies after duplicates removed",
+            "# of studies with title and abstract screened",
+            "EXCLUDE_PHASE: # of studies excluded",
+            "# of full-text articles assessed for eligibility",
+            "EXCLUDE_PHASE: # of full-text articles excluded, not fitting eligibility criteria",
+            "# of studies included in qualitative synthesis",
+            "EXCLUDE_PHASE: # studies excluded, incomplete data reported",
+            "final # of studies included in quantitative synthesis (meta-analysis)")
+thePlot <- plot_PRISMA(phases)
+```
+
+## Notes on PRISMA plotting since metagear v. 0.1 and 0.2
+
+Previous versions of **metagear** (v. 0.2 and 0.1) offered a more flexible version of `plot_PRISMA()` that allowed for proper rescaling of PRISMA objects when the user mannualy changed the window size of the plot.  Unfortunatly, this version did not load well when bundled with the package and yeilded unusual plots (I would love to hear any tips on how to properly manage viewports and grid objects within a package!).  Anyway, these versions are available on my website and allow for higher-quality PRISMA plots; these old functions can be downloaded [ here ](http://lajeunesse.myweb.usf.edu/metagear/metagear_PRISMA_plot_Lajeunesse.zip) and work best when not loaded with **metagear**. 
+
+<p><br></p>
+<center>![Section Break](http://lajeunesse.myweb.usf.edu/metagear/Dots_Divider.png)</center>
+<p><br></p>
+
 # Automated extraction of data from scatterplots
+
+---
 
 Extracting data from a figure image is a common challenge when trying to extract outcomes (effect sizes) from a study.  The scrapping (reverse engineering) of data points from a scatterplot image can be automated with **metagear**.
 
@@ -330,7 +526,7 @@ rawData3 <- figure_scatterPlot("example_3_scatterPlot.jpg",
                                binary_threshold = 0.8, # increase from 0.6 to 0.8 to include the grey objects
                                axis_thickness = 3, # decrease from 5 to 3 since axes are thin
                                X_min = 0,
-                               X_max = 800,
+                               X_max = 850,
                                Y_min = 0,
                                Y_max = 35)
 ```
@@ -443,10 +639,13 @@ dimnames(organizedData) <- list(theBar_names, theExtraction_names)
 organizedData
 ```
 
-
----
+<p><br></p>
+<center>![Section Break](http://lajeunesse.myweb.usf.edu/metagear/Dots_Divider.png)</center>
+<p><br></p>
 
 # Meta-analysis with multiple effect sizes that share a common control
+
+---
 
 Typically an effect size quantified with a response ratio uses the means (X), standard deviations (SD), and sample sizes (N) from single control (C) and treatment (T) groups.  However, some studies will compare multiple treatment groups to a single control. 
 
@@ -468,7 +667,11 @@ These three RR effect sizes share a common control.  The next step is to model t
 
 ```{r}
 # estimate the sample variance-covariance (VCV) matrix that models the common control relationships among RR
-V <- covariance_commonControl(theData, "commonControl_ID", "X_T", "SD_T", "N_T", "X_C", "SD_C", "N_C", metric = "RR")
+V <- covariance_commonControl(theData, 
+                              "commonControl_ID", 
+                              "X_T", "SD_T", "N_T", 
+                              "X_C", "SD_C", "N_C", 
+                              metric = "RR")
 # display the VCV matrix with rounded variances and covariances
 round(V[[1]], 3)
 ```
@@ -489,4 +692,35 @@ rma.mv(RR, # a simple model that only pools the 3 effect sizes
        digits = 4) 
 ```
 
-The pooled effect size sharing a common control was 0.41 with a variance of 0.0556 (converting SE to variance with 0.2356 ^ 2).
+The pooled effect size sharing a common control was 0.41 with a variance of 0.0556 (converting SE to variance with 0.2356^2^).
+
+<p><br></p>
+<center>![Section Break](http://lajeunesse.myweb.usf.edu/metagear/Dots_Divider.png)</center>
+<p><br></p>
+
+
+# References
+
+---
+
+<p style = "text-indent: -30pt; margin-left:60pt; margin-right:60pt;">
+Carmona, D., Lajeunesse, M.J. and Johnson, M.T.J. (2011) Plant traits that predict resistance to herbivores. *Functional Ecology* **25**: 358-367.
+</p>
+<p style = "text-indent: -30pt; margin-left:60pt; margin-right:60pt;">
+Kam, M., Cohen-Gross, S., Khokhlova, I.S., Degen, A.A. and Geffen, E. (2003) Average daily metabolic rate, reproduction and energy allocation during lactation in the Sundevall jird Meriones crassus. *Functional Ecology* **17**: 496-503.
+</p>
+<p style = "text-indent: -30pt; margin-left:60pt; margin-right:60pt;">
+Kortum, P., and Acymyan, C.Z. 2013. How low can you go? Is the System Usability Scale range restricted? *Journal of Usability Studies* **9**: 14-24. 
+</p>
+<p style = "text-indent: -30pt; margin-left:60pt; margin-right:60pt;">
+Lajeunesse, M.J. (2011) On the meta-analysis of response ratios for studies with correlated and multi-group designs. *Ecology* **92**: 2049-2055. 
+</p>
+<p style = "text-indent: -30pt; margin-left:60pt; margin-right:60pt;">
+Liberati, A., Altman, D.G., Tetzlaff, J., Mulrow, C., Gotzsche, P.C., Ioannidis, J.P., Clarke, M., Devereaux, P.J., Kleijnen, J., and Moher, D. (2009) The PRISMA statement for reporting systematic reviews and meta-analyses of studies that evaluate health care interventions: explanation and elaboration. *PLoS Medicine* **6**: e1000100.
+</p>
+<p style = "text-indent: -30pt; margin-left:60pt; margin-right:60pt;">
+Pau, G., Fuchs, F., Sklyar, O., Boutros, M. and Huber, W. (2010). EBImage—an R package for image processing with applications to cellular phenotypes. *Bioinformatics* **26**: 979-981.
+</p>
+
+<br>
+<a href = "#top">Return to top</a>

@@ -25,3 +25,5 @@ paintPoints <- function(aDetectedPlot, aBasePlot, size = 8, color = "blue") {
 unitTrim <- function(unit) {
   as.numeric(sub("native", "", as.character(unit)))
 }
+
+

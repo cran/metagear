@@ -5,7 +5,9 @@
 #' agreement on their inclusion/exclusion.  If a dual (paired) design was 
 #' implemented to screen references, then it also provides inter-reviewer 
 #' agreement estimate following Cohen (1960) that describes the agreement (or 
-#' repeatability) of screening/coding decisions.     
+#' repeatability) of screening/coding decisions. The magnitudes of 
+#' inter-reviewer agreement estimates are then interpreted following 
+#' Landis & Koch (1977).      
 #'
 #' @param aDataFrame A data.frame containing the titles and abstracts that were 
 #'    screened by a team.  The default assumes that the data.frame is the

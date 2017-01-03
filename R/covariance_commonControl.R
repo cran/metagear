@@ -32,8 +32,19 @@
 #' @return A K by K sampling variance-covariance matrix and a data frame aligned
 #'    with the block diagonal design of the sampling matrix. 
 #'
-#' @references Lajeunesse, M.J. 2011. On the meta-analysis of response ratios for
-#'     studies with correlated and multi-group designs. Ecology 92: 2049-2055. 
+#' @note \strong{Response Ratio's (\eqn{\mathit{RR}}) with a comon control group}\cr\cr 
+#'    Following Lajeunesse (2011), when two (or more) reponse ratio 
+#'    (\eqn{\mathit{RR}}) effect sizes share a common control mean 
+#'    (\eqn{\bar{X}_C}), such as
+#'    \eqn{\mathit{RR}_{A,C}=ln(\bar{X}_A/\bar{X}_C)} and 
+#'    \eqn{\mathit{RR}_{B,C}=ln(\bar{X}_B/\bar{X}_C)}, then they share a 
+#'    sampling covariance of:
+#'    \deqn{cov(\mathit{\mathit{RR}}_{A,C},~\mathit{RR}_{B,C})=\frac{(\mathit{SD}_C)^2}{N_C\bar{X}_C^2},}
+#'    where the \eqn{\mathit{SD}} and \eqn{N} are the standard deviation 
+#'    and sample size of \eqn{\bar{X}_C}, respectively.
+#'
+#' @references Lajeunesse, M.J. 2011. On the meta-analysis of response ratios 
+#'    for studies with correlated and multi-group designs. Ecology 92: 2049-2055. 
 #'
 #' @import Matrix
 #' @export covariance_commonControl

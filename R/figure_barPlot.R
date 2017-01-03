@@ -91,7 +91,7 @@ figure_barPlot <- function (file = file.choose(),
     
   # detect all horizontal lines (the caps of column bars and error bars)
   lineBrush <- makeBrush(bar_width, shape = "line", angle = 0)
-  verticalLinesOnlyFigure <- openingGreyScale(distmap(aBinaryFigure), lineBrush)
+  verticalLinesOnlyFigure <- opening(distmap(aBinaryFigure), lineBrush)
   extractedBars <- watershed(distmap(verticalLinesOnlyFigure), bar_sensitivity) 
   
   # clean up detections: outliers

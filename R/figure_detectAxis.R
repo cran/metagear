@@ -18,7 +18,7 @@
 #'
 #' @seealso \link{figure_detectAllPoints}
 #' 
-#' @importFrom EBImage makeBrush openingGreyScale watershed distmap
+#' @importFrom EBImage makeBrush opening watershed distmap
 #'    rmObjects computeFeatures.shape computeFeatures.moment
 #' @export
 
@@ -60,7 +60,7 @@ figure_detectAxis <- function (aBinaryPlot,
   
   # repaint plot with only lines visible
   lineBrush <- makeBrush(watershed_thickness, shape = "line", angle = theAngle)
-  aPaintedPlot <- openingGreyScale(distmap(aBinaryPlot), lineBrush)
+  aPaintedPlot <- opening(distmap(aBinaryPlot), lineBrush)
   
   # detect all vertical lines
   aDetectedPlot <- watershed(distmap(aPaintedPlot), watershed_sensitivity) 

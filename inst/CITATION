@@ -1,15 +1,20 @@
 citHeader("To cite metagear in a publication use:")
 
 citEntry(
-	entry="Article",
-	title="Facilitating systematic reviews, data extraction, and meta-analysis with the metagear package for R",
-	author="Marc J. Lajeunesse",
-	journal="Methods in Ecology and Evolution",
-	year=2015,
-	volume="TBA",
-	pages="TBA",
-	textVersion="Lajeunesse, M.J. (in press) Facilitating systematic reviews, data extraction, and meta-analysis with the metagear package for R. Methods in Ecology and Evolution"	   
+	entry = "Article",
+	title = "Facilitating systematic reviews, data extraction, and meta-analysis
+	with the metagear package for R",
+	author = "Marc J. Lajeunesse",
+	journal = "Methods in Ecology and Evolution",
+	year = "2016",
+	volume = "7",
+	pages = "323-330",
+	textVersion = "Lajeunesse, M.J. (2016) Facilitating systematic reviews, 
+	data extraction, and meta-analysis with the metagear package for R. 
+	Methods in Ecology and Evolution 7: 323-330."	   
 )
 
-citFooter("Additions and modifications to metagear are frequent, to help with reproducibility of output please cite its version number. Find it with 'help(package=metagear)'.")
+citFooter("Additions and modifications to metagear are frequent, to help 
+with reproducibility of output please cite its version number. Find it 
+using packageDescription().")
 

@@ -42,7 +42,7 @@ random_r <- function(K = 100,
     samples <- sum(N)
     theGroups <- rep(1:length(N), N)
     finalN <- N
-    #add warning message that K is ignored
+    #TO DO: add warning message that K is ignored
   }
   else {
     samples <- K * N

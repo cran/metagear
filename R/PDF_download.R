@@ -2,7 +2,9 @@
 #'
 #' Tries to download a PDF file using the digital objected identifier (DOI) link.
 #' Uses ad hoc searches of journal HTML pages to detect candidate PDFs for 
-#' download.  Downloads all candidate pdfs.
+#' download.  Downloads all candidate pdfs. \strong{If running downloader 
+#' in Windows, having \code{"WindowsProxy = TRUE"} will significantly improve 
+#' download success.} 
 #'
 #' @param DOI A string of the DOI (digital object identifier) used to identify
 #'    the source of a journal article PDF file(s).
@@ -15,7 +17,12 @@
 #'    they are not valid PDF formats.
 #' @param quiet When \code{"FALSE"} does not print to console download progress 
 #'    and summary.
-#'
+#' @param WindowsProxy When \code{TRUE} significantly improves download success 
+#'    for computers running Windows; when \code{FALSE} on a Windows based 
+#'    computer, you may only be able to download 30 to 50 PDFs at a time before 
+#'    a connection error occurs and halts all downloads (e.g., 
+#'    \code{InternetOpenUrl failed} error).
+#'    
 #' @return A string describing the download success.  If unsuccessful,
 #'    returns the type of error during the download attempt.
 #'
@@ -29,8 +36,8 @@ PDF_download <- function(DOI,
                          directory = getwd(), 
                          theFileName = "temp", 
                          validatePDF = TRUE, 
-                         quiet = FALSE) {
-  
+                         quiet = FALSE,
+                         WindowsProxy = FALSE) {
   
   if(!quiet) {
     message(paste0("Collecting PDF from DOI: ", DOI))
@@ -49,7 +56,8 @@ PDF_download <- function(DOI,
     wasPDFdownloaded <- extractPDFsFromHTML(theHTMLvector, 
                                             directory, 
                                             theFileName, 
-                                            validatePDF)
+                                            validatePDF,
+                                            WindowsProxy)
     
     if(wasPDFdownloaded == TRUE) {
       downloadMessage <- " successful"
@@ -74,7 +82,11 @@ PDF_download <- function(DOI,
                      downloadMessage))
     }
     
-    downloadOutcome <- "URL error"
+    if(is.na(DOI)) {
+      downloadOutcome <- "no DOI" 
+    } else { 
+      downloadOutcome <- "URL error"
+    }
   }
     
   return(downloadOutcome)

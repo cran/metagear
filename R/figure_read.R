@@ -14,7 +14,7 @@
 #' @export
 
 figure_read <- function (file = file.choose(), 
-                                display = FALSE) {
+                         display = FALSE) {
     
   # load figure
   aFigure <- readImage(file)

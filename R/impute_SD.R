@@ -17,11 +17,11 @@
 #'    fill gaps of missing SD from the SD's with complete information, and 
 #'    \code{"HotDeck_NN"} which resamples from complete cases with means that are similar
 #'    to missing SD's.
-#'  @param range A positive number on the range of neighbours to sample from for
+#' @param range A positive number on the range of neighbours to sample from for
 #'    imputing SD's.  Used in combination with \code{"HotDeck_NN"}. The default 
 #'    is 3; which indicates that the 3 means that are most similar in rank order
 #'    to the mean with the missing SD will be resampled. 
-#'  @param M The number of imputed datasets to return.  Currently only works
+#' @param M The number of imputed datasets to return.  Currently only works
 #'    for \code{"HotDeck"} method.
 #'
 #' @return An imputed (complete) dataset. 
@@ -60,4 +60,3 @@ impute_SD <- function(aDataFrame,
                  
   return(imputedData)
 }
-

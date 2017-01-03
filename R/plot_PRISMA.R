@@ -5,7 +5,8 @@
 #'    exclusions during various systematic review phases.  It is meant to 
 #'    describe the number of studies identified, included, excluded, reasons
 #'    for inclusion/exclusions, and final number of studies used in the
-#'    meta-analysis.       
+#'    meta-analysis.  NOTE: currently only supports two start phases, and final
+#'    phase must not have an exclude branch.       
 #'
 #' @param aPhaseVector A vector of ordered labels (strings) for each phase of
 #'    the PRISMA diagram.  Labels designating the beginning of the diagram
@@ -16,8 +17,9 @@
 #' @param excludeDistance An optional value designating the the distance of 
 #'    exclude phase box from the main flow diagram.  Larger values (> 0.8) 
 #'    increase this distance.
+#' @param hide When FALSE, the PRISMA flow diagram is not plotted.
 #'
-#' @return NULL 
+#' @return a grid object (grob) list 
 #'
 #' @examples
 #' phases <- c("START_PHASE: # of studies identified through database searching",
@@ -36,17 +38,21 @@
 #'    PRISMA Group. (2009) Preferred reporting items for systematic reviews and
 #'    meta-analyses: the PRISMA statement. BMJ 339, b2535.
 #'
-#' @import grid 
+#' @import grid
 #' @export plot_PRISMA
 
 plot_PRISMA <- function (aPhaseVector, 
                          colWidth = 30,
-                         excludeDistance = 0.8) {
+                         excludeDistance = 0.8,
+                         hide = FALSE) {
   
-  # initialize grid and PRISMA phases
   grid.newpage(recording = FALSE)
-  theGrobs <- getPhaseGrobs(getPhaseClean(aPhaseVector), colWidth)
+  PRISMA_vp <- viewport(width = 1, height = 1)
+  pushViewport(PRISMA_vp)
   
+  # generate all PRISMA phases with undefined x and y positions
+  theGrobs <- getPhaseGrobs(getPhaseClean(aPhaseVector), colWidth)
+
   phaseScheme <- getPhaseScheme(aPhaseVector)
   startPhases <- phaseScheme %in% "S"
   startIndex <- which(startPhases)
@@ -59,48 +65,56 @@ plot_PRISMA <- function (aPhaseVector,
   
   # plot (multiple) start phases on same horizontal line
   for(aPhase in startIndex) {
-    theGrobs[[aPhase]]$x <- xCoordinates 
-    theGrobs[[aPhase]]$y <- yCoordinates
-    grid.draw(theGrobs[[aPhase]])
+    theGrobs[[aPhase]] <- movePhaseGrob(theGrobs[[aPhase]], 
+                                        x = xCoordinates, 
+                                        y = yCoordinates)
     xCoordinates <- xCoordinates + xDistance
   }
-  
+
   exclude <- FALSE
   lastBox <- theGrobs[[endIndex[1]]]
   if(length(startIndex) == 1) xDistance <- round(1.0 / 3.0, 2)
   
-  # plot and link phases with arrows
+  # plot remaining PRISMA phases and link with arrows
   for(aPhase in endIndex) {
     if(yCoordinates == 0.9) {
+    
       yCoordinates <- yCoordinates - yDistance
-      lastBox$y <- yCoordinates
-      grid.draw(lastBox)
+      lastBox <- movePhaseGrob(lastBox, y = yCoordinates)
       if(length(startIndex) > 1) {
-        marryPhases(theGrobs[[1]], lastBox, theGrobs[[2]])
-        theGrobs[[endIndex[1]]] <- lastBox
+        theGrobs <- marryPhases(theGrobs[[1]], lastBox, theGrobs[[2]], theGrobs)
       } else {
-        connectPhases(theGrobs[[1]], lastBox)
+        theGrobs <- connectPhases(theGrobs[[1]], lastBox, theGrobs)
       }
+      theGrobs[[endIndex[1]]] <- lastBox
+      
     } else {
+    
       if (phaseScheme[aPhase] == "E") {
-        theGrobs[[aPhase]]$x <- round(0.5 + xDistance * excludeDistance, 2) 
-        theGrobs[[aPhase]]$y <- yCoordinates
-        grid.draw(theGrobs[[aPhase]])
+        theGrobs[[aPhase]] <- movePhaseGrob(theGrobs[[aPhase]], 
+                                            x = round(0.5 + xDistance * excludeDistance, 2), 
+                                            y = yCoordinates)
         exclude <- TRUE
       } else {
-        theGrobs[[aPhase]]$y <- yCoordinates - yDistance
-        grid.draw(theGrobs[[aPhase]])
+        theGrobs[[aPhase]] <- movePhaseGrob(theGrobs[[aPhase]], 
+                                            y = yCoordinates - yDistance)
       }
       
       if (exclude == TRUE) {
-        excludePhase(lastBox, theGrobs[[aPhase]])
+        theGrobs <- excludePhase(lastBox, theGrobs[[aPhase]], theGrobs)
         exclude <- FALSE
       } else {
-        connectPhases(lastBox, theGrobs[[aPhase]])
+        theGrobs <- connectPhases(lastBox, theGrobs[[aPhase]], theGrobs)
         yCoordinates <- yCoordinates - yDistance
         lastBox <- theGrobs[[aPhase]]
       }
+      
     }
   }
-  return (NULL)
+
+  # draw all the grid objects
+  if (hide == FALSE) grid.draw(theGrobs, recording = FALSE)
+    
+  popViewport()
+  return(theGrobs)  
 }

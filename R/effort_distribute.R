@@ -44,15 +44,20 @@
 #'
 #' @export effort_distribute
 
-effort_distribute <- function (aDataFrame,
+effort_distribute <- function (aDataFrame = NULL,
                                dual = FALSE,
-                               reviewers, 
+                               reviewers = NULL, 
                                column_name = "REVIEWERS", 
                                effort = NULL, 
                                initialize = FALSE,
                                save_split = FALSE,
                                directory = getwd() ) {
   
+  if(is.null(reviewers)) .metagearPROBLEM("error", 
+                                          "no reviewers were assigned")
+  if(is.null(aDataFrame)) .metagearPROBLEM("error", 
+                                           "a dataframe with refs was not specified")
+										   
   number_REFS <- nrow(aDataFrame)
   number_reviewers <- length(reviewers)
   
@@ -90,7 +95,7 @@ effort_distribute <- function (aDataFrame,
     # generate reviewers tasks evenly or via custom 'effort' 
     if(is.vector(effort) && length(unique(effort)) != 1) {
       if(sum(effort) != 100) .metagearPROBLEM("error", 
-                                              "Effort does not sum to 100%.")
+                                              "Effort does not sum to 100.")
       theEffort <- rep(reviewers, round((number_REFS * (effort / 100))))
     } else {
       theEffort <- gl(number_REFS, 

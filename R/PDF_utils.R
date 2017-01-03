@@ -1,43 +1,201 @@
 # evaluate whether the URL is available
 is.URLconnectable <- function(theURL) {
-  aConnection <- suppressWarnings(try(url(theURL, open = "rb"), silent = TRUE))
+  aConnection <- suppressWarnings(try(url(theURL, open = "rb"), 
+                                      silent = TRUE))
   if(inherits(aConnection, "try-error")) return(FALSE)
   close(aConnection)
   return(TRUE)
 }
 
+# collect HTML as large vector
 getHTMLfromURL <- function(theURL) {
   theHTMLvector <- tryCatch(
     readLines(theURL, n = -1, ok = TRUE, warn = FALSE), 
     error = function(cond) return(paste0(" failed url, with error: ", cond[1])),
     warning = function(cond) return(paste0(" maybe failed url, with warning: ", cond[1]))
   )    
+
+  # scrub unlikely url-containing rows with short HTML strings
+  theHTMLvector <- theHTMLvector[nchar(theHTMLvector) > 25]
   return(theHTMLvector)
 }
 
-getPDFfromURL <- function(theURL, 
-                          theDirectory, 
-                          theFileName) {
-  aConnection <- suppressWarnings(try(download.file(theURL, 
-                                                    destfile = file.path(theDirectory, 
-                                                               paste0(theFileName, ".pdf")), 
-                                                    quiet = TRUE, 
-                                                    method = "auto",  
-                                                    mode = "wb", 
-                                                    cacheOK = FALSE), silent = TRUE))
-  if(inherits(aConnection, "try-error")) 
-    return(paste0(" failed download, with error: ", aConnection[1]))
+# generic constructor for url searches of PDFs in HTML documents
+aPattern <- function(wildcard_PRE = "",
+                     wildcard_POST = "",
+                     wildcard_POST_add = "",
+                     domain = "",
+                     anchor = "",
+                     multiURLs = "",
+                     redirect = "") {
   
-  return(aConnection)
+  list("wildcard_PRE" = wildcard_PRE,
+       "wildcard_POST" = wildcard_POST,
+       "wildcard_POST_add" = wildcard_POST_add,
+       "domain" = domain,
+       "anchor" = anchor,
+       "multiURLs" = multiURLs,
+       "redirect" = redirect
+  ) 
+  
 }
 
+# a list of publishers and their ad hoc wildcard HTML search and scrub patterns
+publisherList <- list(
+  
+  # Elsevier, Springer, Sage, ...
+  wcf_generic         = aPattern(wildcard_PRE = "http.*pdf", 
+                                 multiURLs = " "),
+
+  # JSTOR  
+  wcf_jstore          = aPattern(wildcard_PRE = "pdf/.*pdf\" target", 
+                                 wildcard_POST = "\" target",                                
+                                 domain = "http://www.jstor.org/stable/",
+                                 anchor = "?acceptTC=true"),
+  
+  # Taylor & Francis Online  
+  wcf_tfo             = aPattern(wildcard_PRE = "/doi/pdf/.*?needAccess=true", 
+                                 domain = "http://www.tandfonline.com"),
+  
+  # American Chemical Society
+  # NOTE: ACS provides many PDF links on their websites (all of these will be
+  # downloaded).
+  wcf_acs             = aPattern(wildcard_PRE = "/doi/pdf/.*\">PDF<", 
+                                 wildcard_POST = "\">PDF<",
+                                 domain = "http://pubs.acs.org"),
+  
+  # NRC Research Press 
+  wcf_nrc             = aPattern(wildcard_PRE = "/doi/pdf/.*\">", 
+                                 wildcard_POST = "\">",
+                                 domain = "http://www.nrcresearchpress.com"),
+  
+  # BioOne 
+  wcf_bioone          = aPattern(wildcard_PRE = "/doi/pdf/.*\">PDF", 
+                                 wildcard_POST = "\">PDF",                               
+                                 domain = "http://www.bioone.org"),
+  
+  # University of Chicago Press  
+  wcf_chicago         = aPattern(wildcard_PRE = "/doi/pdfplus/.*\" ", 
+                                 wildcard_POST = "\" ",
+                                 domain = "http://www.journals.uchicago.edu"),
+  
+  # Nature 
+  wcf_nature          = aPattern(wildcard_PRE = "=.*\\.pdf", 
+                                 wildcard_POST = "=\"",  
+                                 domain = "http://www.nature.com"),
+  wcf_nature2         = aPattern(wildcard_PRE = "=.*\\.pdf",
+                                 wildcard_POST = "=\"download-pdf\"><a href=\"",
+                                 domain = "http://www.nature.com"),
+  wcf_nature3         = aPattern(wildcard_PRE = "/articles/.*.pdf",
+                                 multiURLs = " ",
+                                 domain = "http://www.nature.com"),
+
+  # Maney Online (now Taylor & Francis)  
+  wcf_maney           = aPattern(wildcard_PRE = "/.*pdfplus.*\"",
+                                 wildcard_POST = "\"",
+                                 domain = "http://www.maneyonline.com"),
+  
+  # Japan Science and Technology Aggregator 
+  wcf_jstage          = aPattern(wildcard_PRE = "/article.*/_pdf", 
+                                 domain = "https://www.jstage.jst.go.jp"),
+  
+  # PLOS 
+  wcf_plos            = aPattern(wildcard_PRE = "http.*type=printable"),
+ 
+  # Wiley Online
+  wcf_ScienceDirect   = aPattern(wildcard_PRE = "http://onlinelibrary.wiley.com/doi/.*/abstract",
+                                 wildcard_POST = "abstract",
+                                 wildcard_POST_add = "pdf",
+                                 multiURLs = "\"",
+                                 redirect = "http://onlinelibrary.wiley.com/store/.*pdf.*"),
+  # BioMed Central
+  wcf_BioMed          = aPattern(wildcard_PRE = "http:.*?site=",
+                                 wildcard_POST = "\\?site="),
+								 
+  # Chemical Society of Japan Journals
+  wcf_CSJ             = aPattern(wildcard_PRE = "/doi.*\" class",
+                                 wildcard_POST = "\" class",
+                                 domain = "http://www.journal.csj.jp")
+  
+)
+
+# scrapes HTML document to find PDFs using url patterns
+scrapeHTML <- function(theHTMLdata,
+                       wildcard_PRE,
+                       wildcard_POST,
+                       wildcard_POST_add,
+                       domain,
+                       anchor,
+                       multiURLs, 
+                       redirect) {
+  
+  # PRE-scrub of HTML
+  candidateURLs <- pullLinks(theHTMLdata, wildcard_PRE)
+  
+  # if nothing found return NULL
+  if(length(candidateURLs) == 0) return(NULL)
+  
+  # find all URLs within each html line
+  if(multiURLs != "") {
+    tempURLs <- vector()
+    for(i in candidateURLs) {
+      foundURLs <- pullLinks(unlist(strsplit(i, multiURLs)), wildcard_PRE)
+      if(!identical(foundURLs, character(0))) tempURLs <- c(tempURLs, foundURLs)
+    }
+    candidateURLs <- tempURLs
+  }
+  
+  # POST-scrub of urls
+  if(wildcard_POST != "") candidateURLs <- gsub(wildcard_POST, 
+                                                wildcard_POST_add, 
+                                                candidateURLs)
+  
+  # add domain to candidate urls
+  if(domain != "") candidateURLs <- paste0(domain, candidateURLs)
+  
+  # add anchor to candidate urls
+  if(anchor != "") candidateURLs <- paste0(candidateURLs, anchor)
+  
+  # remove any duplicates or invalid urls containing spaces
+  candidateURLs <- unique(candidateURLs[!grepl(" ", candidateURLs)])
+  if(length(candidateURLs) == 0) return(NULL)
+  
+  if(redirect != "") {
+    redirectedHTMLdata <- getHTMLfromURL(candidateURLs)
+    candidateURLs <- unique(scrapeHTML(theHTMLdata = redirectedHTMLdata,
+                                       wildcard_PRE = redirect,
+                                       wildcard_POST = "",
+                                       wildcard_POST_add = "",
+                                       domain = "",
+                                       anchor = "",
+                                       multiURLs = multiURLs, 
+                                       redirect = ""))
+  }
+  
+  return(candidateURLs)
+}
+
+# common HTML extractor
+pullLinks <- function(theHTMLdata, wildcard) {
+  someLinks <- str_extract(theHTMLdata, wildcard)
+  return(unique(someLinks[!is.na(someLinks)]))
+}
+
+# iterate through candidate URLs and test validity
 extractPDFsFromHTML <- function(theHTMLvector, 
                                 theDirectory, 
                                 theFileName, 
-                                validatePDF = TRUE) {
+                                validatePDF,
+                                WindowsProxy
+                                ) {
   
   candidateLinks <- extractPDFLinksFromHTML(theHTMLvector, validatePDF)
-  if(candidateLinks[1] == FALSE) return (" failed, no valid url links detected")
+  
+  switch(candidateLinks[1],
+    "error_url" = return (" failed, url connections too slow or unavailable"),
+    "error_pdf" = return (" failed, connections too slow or files not PDF format"),
+    "error_links" = return (" failed, no valid url links detected")
+  )
   
   if(length(candidateLinks) != 1) theFileName <- paste0(theFileName, 
                                                         ".", 
@@ -47,7 +205,8 @@ extractPDFsFromHTML <- function(theHTMLvector,
     getPDFfromURL, 
     candidateLinks, 
     theDirectory, 
-    theFileName
+    theFileName,
+    WindowsProxy
   )
   
   #return TRUE if at least one file was successfully downloaded
@@ -57,174 +216,87 @@ extractPDFsFromHTML <- function(theHTMLvector,
 extractPDFLinksFromHTML <- function(theHTMLvector, 
                                     validatePDF = TRUE) {
   
+  candidateLinks <- lapply(publisherList, 
+                           function(x, theData) scrapeHTML(theData, 
+                                                           x$wildcard_PRE,
+                                                           x$wildcard_POST,
+                                                           x$wildcard_POST_add,
+                                                           x$domain,
+                                                           x$anchor,
+                                                           x$multiURLs,
+                                                           x$redirect), 
+                           theData = theHTMLvector)
+  
   # extract all unique PDF-links using a collection of search criteria defined in wildcardFunctionList
-  candidateLinks <- unique(unlist(lapply(wildcardFunctionList, 
-                                         function(x) eval(parse(text = paste0(x, "(theHTMLvector)"))))))
-
+  candidateLinks <- unique(unlist(candidateLinks))
+  if(length(candidateLinks) == 0) return ("error_links")
+  
   # from the candidateLinks, select only those with connectable URLs
   candidateLinks <- candidateLinks[unlist(lapply(candidateLinks, is.URLconnectable))]
+  if(length(candidateLinks) == 0) return ("error_url")
   
   # from the candidateLinks, select only those identified as PDFs
-  if(validatePDF) candidateLinks <- candidateLinks[unlist(lapply(candidateLinks, isPDF))]
-
-  if(length(candidateLinks) == 0) return (FALSE)
-  return(candidateLinks)
-}
-
-# collection of HTML PDF-link extractor functions
-wildcardFunctionList <- c(
-  "wcf_generic",  # generic links
-  "wcf_jstore",   # jstore links (www.jstor.org)
-  "wcf_bioone",   # bioone links (www.bioone.org)
-  "wcf_wiley",    # wiley online links (onlinelibrary.wiley.com) NOTE: no longer works as of 11/5/14
-  "wcf_nrc",      # NRC publications links (http://www.nrcresearchpress.com)
-  "wcf_jstage",   # J-stage publications links (www.jstage.jst.go.jp)
-  "wcf_tfo",      # Taylor & Francis online links (www.tandonline.com)
-  "wcf_nature",   # nature publications links (www.nature.com) 
-  "wcf_maney",    # Maney online (www.maneyonline.com)
-  "wcf_acs"       # acs publications links (pubs.acs.org)
-)
-
-# extract all generic PDF-links from HTML vector document
-# last validated: 11/3/2014, M.J. Lajeunesse
-wcf_generic <- function(theHTMLdata) {
-  someLinks <- pullLinks(theHTMLdata, "http.*pdf")
-  candidateLinks <- vector()
-  for(i in 1:length(someLinks)) {
-    cleanedURL <- wcf_generic_URL_cleaner(someLinks[i])
-    if(!identical(cleanedURL, character(0))) candidateLinks <- c(candidateLinks, cleanedURL)
+  if(validatePDF == TRUE) {
+    candidateLinks <- candidateLinks[unlist(mapply(isPDF, candidateLinks, FALSE))]
+    if(length(candidateLinks) == 0) return ("error_pdf")
   }
-  if(length(candidateLinks) == 0) return(NULL)
-  else return(candidateLinks)
-}
 
-# HELPER FUNCTION for wcf_generic(): extra scrubbing of generic html links 
-wcf_generic_URL_cleaner <- function(aURLstring) {
-  subStrings <- unlist(strsplit(aURLstring, " "))
-  findURLS <- str_extract(subStrings, "http.*\\.pdf")
-  return(unique(findURLS[!is.na(findURLS)]))
-}
-
-# extract all PDF-links from a HTML vector document from jstore
-# last validated: 11/3/2014, M.J. Lajeunesse
-wcf_jstore <- function(theHTMLdata) {
-  candidateLinks <- pullLinks(theHTMLdata, "pdfplus.*pdf")
-  if(length(candidateLinks) == 0) return(NULL)
-  candidateLinks <- paste0("http://www.jstor.org/stable/", 
-                           candidateLinks, "?acceptTC=true")
   return(candidateLinks)
 }
 
-# extract all PDF-links from a HTML vector document from bioone
-# last validated: 11/3/2014, M.J. Lajeunesse
-wcf_bioone <- function(theHTMLdata) {
-  candidateLinks <- pullLinks(theHTMLdata, "/doi/pdf/.*\">PDF")
-  if(length(candidateLinks) == 0) return(NULL)
-  candidateLinks <- paste0("http://www.bioone.org",  
-                           gsub("\">PDF", "", candidateLinks))
-  return(candidateLinks)
+# download PDF online
+# NOTE: method = libcurl, helps with simultaneous downloads, but is more sensitive
+# to errors with long urls with many anchors
+getPDFfromURL <- function(theURL, 
+                          theDirectory, 
+                          theFileName,
+                          WindowsProxy) {
+  
+  if(WindowsProxy == TRUE) { 
+    theProxy <- "wininet"
+  } else {
+    theProxy <- "auto"
+  }
+  
+  aConnection <- suppressWarnings(try(download.file(theURL, 
+                                                    destfile = file.path(theDirectory, 
+                                                                         paste0(theFileName, ".pdf")), 
+                                                    quiet = TRUE, 
+                                                    method = theProxy,  
+                                                    mode = "wb", 
+                                                    cacheOK = FALSE,
+                                                    options(timeout = 600)), 
+									  silent = TRUE))
+
+  if(inherits(aConnection, "try-error")) 
+    return(paste0(" failed download, with error: ", aConnection[1]))
+    
+  return(aConnection)
 }
 
-# extract all PDF-links from a HTML vector document from wiley online
-# last validated: no longer works as of 11/3/2014, M.J. Lajeunesse
-# NOTE: can download pdf through browseURL(candidateLinks), but too much work to
-# locate, move, and rename downloaded pdf
-#wcf_wiley <- function(theHTMLdata) {
-#  candidateLinks <- gsub("abstract", "pdf", unique(pullLinks(theHTML, 
-# "http://onlinelibrary.wiley.com/doi/.*/abstract")))
-#  return(candidateLinks)
-#}
+PDFobjectToImageFile <- function (objectLocation, 
+                                  theObjects, 
+                                  theFile, 
+                                  imageFileName) {
+ 
+  # parse object by stream & endstream
+  parsedImageObject <-  unlist(strsplit(theObjects[objectLocation], "stream"))
+  
+  # extract key char locations of image in PDF with trailingChars as a correction 
+  # for "stream" being followed by 2 return characters 
+  trailingChars <- "  "
+  startImageLocation <- nchar(paste(parsedImageObject[1], "stream", trailingChars, sep = ""))
+  endImageLocation <- startImageLocation + nchar(substr(parsedImageObject[2], 1, nchar(parsedImageObject[2]) - nchar("end")))
+  PDFLocation <- nchar(paste(theObjects[1:(objectLocation - 1)], collapse = ''))
+  
+  # extract binary of image from PDF
+  PDFImageBlock <- readRaw(theFile, offset = PDFLocation + startImageLocation, nbytes = endImageLocation, machine = "binary")
+  
+  # save binary of image to new file
+  detectedImageFile <- file(imageFileName, "wb")
+      writeBin(PDFImageBlock$fileRaw, detectedImageFile)
+  close(detectedImageFile)
 
-# extract all PDF-links from a HTML vector document from ACS publications
-# last validated: 11/3/2014, M.J. Lajeunesse
-wcf_acs <- function(theHTMLdata) {
-  candidateLinks <- pullLinks(theHTMLdata, "/doi/pdf/.*\">PDF<")
-  if(length(candidateLinks) == 0) return(NULL)
-  candidateLinks <- paste0("http://pubs.acs.org", 
-                           gsub("\">PDF<", "", candidateLinks))
-  return(candidateLinks)
-}
-
-# extract all PDF-links from a HTML vector document from NRC publications
-# last validated: 11/3/2014, M.J. Lajeunesse
-wcf_nrc <- function(theHTMLdata) {
-  candidateLinks <- pullLinks(theHTMLdata, "/doi/pdf/.*\">")
-  if(length(candidateLinks) == 0) return(NULL)
-  candidateLinks <- paste0("http://www.nrcresearchpress.com", 
-                           gsub("\">", "", candidateLinks))
-  return(candidateLinks)
-}
-
-# extract all PDF-links from a HTML vector document from J-stage publications
-# last validated: 11/3/2014, M.J. Lajeunesse
-wcf_jstage <- function(theHTMLdata) {
-  candidateLinks <- pullLinks(theHTMLdata, "/article.*/_pdf")
-  if(length(candidateLinks) == 0) return(NULL)
-  candidateLinks <- paste0("https://www.jstage.jst.go.jp", candidateLinks)
-  return(candidateLinks)
-}
-
-# extract all PDF-links from a HTML vector document from Taylor & Francis online publications
-# last validated: 11/3/2014, M.J. Lajeunesse
-wcf_tfo <- function(theHTMLdata) {
-  candidateLinks <- pullLinks(theHTMLdata, "/doi/pdf/.*\">D")
-  if(length(candidateLinks) == 0) return(NULL)
-  candidateLinks <- paste0("http://www.tandfonline.com", 
-                           gsub("\">D", "", candidateLinks))
-  return(candidateLinks)
-}
-
-# extract all PDF-links from a HTML vector document from Nature publications
-# last validated: 11/3/2014, M.J. Lajeunesse
-wcf_nature <- function(theHTMLdata) {
-  candidateLinks <- unique(unlist(strsplit(pullLinks(theHTMLdata, 
-                                                     "=.*\\.pdf"), "\"")))
-  if(length(candidateLinks) == 0) return(NULL)
-  candidateLinks <- unique(pullLinks(candidateLinks, ".*\\.pdf"))
-  candidateLinks <- paste0("http://www.nature.com", candidateLinks)
-  return(candidateLinks)
-}
-
-# extract all PDF-links from a HTML vector document from Maney publications
-# last validated: 11/3/2014, M.J. Lajeunesse
-wcf_maney <- function(theHTMLdata) {
-  candidateLinks <- pullLinks(theHTMLdata, "/.*pdfplus.*\"")
-  if(length(candidateLinks) == 0) return(NULL)
-  candidateLinks <- paste0("http://www.maneyonline.com", 
-                           gsub("\"", "", candidateLinks))
-  return(candidateLinks)
-}
-
-#wcf_wiley <- function(theHTMLdata_redirect) {
-#  theHTMLdata <- getHTMLfromURL(wcf_wiley_helper(unlist(strsplit(theHTMLdata_redirect, ">"))))
-#  candidateLinks <- pullLinks(unlist(strsplit(theHTMLdata,"\"")), "http://onlinelibrary.wiley.com/store/.*pdf.*")
-#  #if(length(candidateLinks) == 0) return(NULL)
-#  return(candidateLinks) 
-#}
-
-wcf_wiley <- function(theHTMLdata) {
-  redirectLinks <- gsub("abstract", 
-                        "pdf", 
-                        unique(pullLinks(theHTMLdata, 
-                                         "http://onlinelibrary.wiley.com/doi/.*/abstract")))
-  if(length(redirectLinks) == 0) return(NULL)
-  theHTMLdata <- getHTMLfromURL(redirectLinks)
-  candidateLinks <- pullLinks(unlist(strsplit(theHTMLdata,"\"")), 
-                              "http://onlinelibrary.wiley.com/store/.*pdf.*")
-  if(length(candidateLinks) == 0) return(NULL)
-  return(candidateLinks)
-}
-
-
-
-# common HTML extractor
-pullLinks <- function(theHTMLdata, wildcard) {
-  someLinks <- str_extract(theHTMLdata, wildcard)
-  return(unique(someLinks[!is.na(someLinks)]))
-}
-
-# common HTML extractor
-pullLinks2 <- function(theHTMLdata, wildcard) {
-  someLinks <- grep(wildcard, theHTMLdata, value = TRUE)
-  return(someLinks[!is.na(someLinks)])
+  # TO DO: RETURN INFO ABOUT SUCCESSFUL FILE SAVE
+  return(imageFileName)
 }

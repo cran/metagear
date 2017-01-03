@@ -22,7 +22,7 @@
 #'
 #' @seealso \code{\link{figure_detectAxis}}
 #' 
-#' @importFrom EBImage makeBrush openingGreyScale watershed distmap 
+#' @importFrom EBImage makeBrush opening watershed distmap 
 #' @export
 
 figure_detectAllPoints <- function (aBinaryPlot, 
@@ -41,7 +41,7 @@ figure_detectAllPoints <- function (aBinaryPlot,
   
   # paint candidate points with box, disc, or diamond brush with defined size
   pointBrush <- makeBrush(size = point_size, shape = point_shape, step = TRUE)
-  aPaintedFigure <- openingGreyScale(distmap(aBinaryPlot), pointBrush) 
+  aPaintedFigure <- opening(distmap(aBinaryPlot), pointBrush) 
   
   # detected symbols with defined sensitivity (smaller number results in a 
   # higher sensitivity to split overlapping points)

@@ -1,106 +1,115 @@
-
-# base constructor for generic phase box
-phaseBox <- function(aLabel, 
-                     x = 0.5, 
-                     y = 0.5,
-                     width = 25) {
-  
-  theLabels <- strwrap(aLabel, width)
-  nLabel <- length(theLabels) 
-  phaseVP <- viewport(x = x, 
-                      y = y, 
-                      width = max(stringWidth(theLabels)) + unit(12, "mm"), 
-                      height = unit(nLabel + 2, "lines"))
-  pushViewport(phaseVP)
-    grid.roundrect()
-    grid.text(theLabels, x = 0.5, y = unit(nLabel:1 + 0.5, "lines"))
-  popViewport()
-}
-
-# generic constructor for phase box
+# generic constructor for PRISMA phase box
 phaseGrob <- function(aLabel, 
                       x = 0.5, 
                       y = 0.5, 
-                      width = 25) {
+                      width = 25,
+                      gp = NULL,
+                      vp = NULL) {
+                      
+  theLabel <- strwrap(aLabel, width)
+  nLabel <- length(theLabel) 
+  phaseHeight <- unit(nLabel + 2, "lines")
+
+  aBox <- roundrectGrob(x = x, 
+                        y = y, 
+                        width = max(stringWidth(theLabel)) + unit(12, "mm"), 
+                        height = phaseHeight)
+
+  centerTextAdjustment <- convertY(phaseHeight, "npc", TRUE) / 2.0 - 
+                            convertY(unit(nLabel:1 + 0.5, "lines"), "npc", TRUE)
+
+  theText <- textGrob(theLabel, x = x, y = y - centerTextAdjustment)  
   
-  grob(aLabel = aLabel, x = x, y = y, width = width, cl = "box")
+  return(gTree(children = gList(aBox, theText), name = "aPhase"))
 }
 
-# used to plot the phase box on a grid
-drawDetails.box <- function(x, 
-                            ...) {
-  
-  phaseBox(x$aLabel, x$x, x$y, x$width)
-}
-
-# helpers to set phase characteristics
-xDetails.box <- function(x, 
-                         theta) {
-  
-  theLabels <- strwrap(x$aLabel, x$width)
-  height <- unit(length(theLabels) + 2, "lines")
-  width <- unit(12, "mm") + max(stringWidth(theLabels))
-  grobX(roundrectGrob(x = x$x, y = x$y, width = width, height = height), theta)
-}
-
-yDetails.box <- function(x, 
-                         theta) {
-  
-  theLabels <- strwrap(x$aLabel, x$width)
-  height <- unit(length(theLabels) + 2, "lines")
-  width <- unit(12, "mm") + max(stringWidth(theLabels))
-  grobY(roundrectGrob(x = x$x, y = x$y, width = width, height = height), theta)
+# change coordinates of phaseGrob by manipulating viewport
+movePhaseGrob <- function(aGrob,
+                        x = 0.5, 
+                        y = 0.5) {
+                      
+    return(editGrob(aGrob, vp = viewport(x = x, y = y)))
 }
 
 # generates all the phases with no X or Y specified
-getPhaseGrobs <- function(aPhaseVector, colWidth = 40) {
-  lapply(aPhaseVector, function(x) phaseGrob(x, width = colWidth))
+getPhaseGrobs <- function(aPhaseVector, 
+                          colWidth = 25) {
+                          
+  phaseList <- gList()
+  for(aPhase in 1:length(aPhaseVector)) {
+    phaseList <- gList(phaseList, 
+                       phaseGrob(aPhaseVector[aPhase], width = colWidth)) 
+  }
+  return(phaseList)
 }
 
-# constructor for arrows that link phases
+# constructor for arrows that link downward flow phases
 connectPhases <- function (parentPhase, 
-                           childPhase) {
+                           childPhase,
+                           allPhases) {
   
-  grid.move.to(grobX(parentPhase, "north"), grobY(parentPhase, "south"))
-  grid.line.to(grobX(childPhase, "south"), grobY(childPhase, "north") + unit(0.2, "mm"), 
-               arrow = arrow(type = "closed", length = unit(4, "mm")), 
-               gp = gpar(fill = "black"))
+  parentHeight <- convertWidth(parentPhase$children[[1]]$height, "mm", TRUE) 
+  childHeight <- convertWidth(childPhase$children[[1]]$height, "mm", TRUE)
+  
+  allPhases <- gList(allPhases, 
+                     moveToGrob(grobX(parentPhase, "north"), 
+                                grobY(parentPhase, "south") - unit(parentHeight / 2.0, "mm") ),
+                     lineToGrob(grobX(childPhase, "south"), 
+                                grobY(childPhase, "north") + unit(0.2, "mm") + unit(childHeight / 2.0, "mm"), 
+                                arrow = arrow(type = "closed", length = unit(4, "mm")), 
+                                gp = gpar(fill = "black")))
+  return(allPhases)
 }
 
 # constructor for double arrows that link start phase to a single daughter phase
 marryPhases <- function (parentPhaseLeft, 
                          childPhase, 
-                         parentPhaseRight) {
-  
-  grid.curve(grobX(parentPhaseLeft, "north"),
-             grobY(parentPhaseLeft, "south"),
-             grobX(childPhase, "south") - unit(5, "mm"),
-             grobY(childPhase, "north"),
-             inflect = TRUE,
-             arrow = arrow(type = "closed",
-                           angle = 30,
-                           length = unit(4, "mm")),
-             gp = gpar(fill = "black", lwd = 1))
-  
-  grid.curve(grobX(parentPhaseRight, "north"),
-             grobY(parentPhaseRight, "south") ,
-             grobX(childPhase, "south") + unit(5, "mm"),
-             grobY(childPhase, "north") ,
-             inflect = TRUE, curvature = -1,
-             arrow = arrow(type = "closed",
-                           angle = 30,
-                           length = unit(4, "mm")),
-             gp = gpar(fill = "black", lwd = 1)) 
+                         parentPhaseRight,
+                         allPhases) {
+
+  parentLeftHeight <- convertWidth(parentPhaseLeft$children[[1]]$height, "mm", TRUE) 
+  childHeight <- convertWidth(childPhase$children[[1]]$height, "mm", TRUE)
+  parentRightHeight <- convertWidth(parentPhaseRight$children[[1]]$height, "mm", TRUE)   
+                         
+  allPhases <- gList(allPhases, 
+                     curveGrob(grobX(parentPhaseLeft, "north"),
+                               grobY(parentPhaseLeft, "south") - unit(parentLeftHeight / 2.0, "mm"),
+                               grobX(childPhase, "south") - unit(5, "mm"),
+                               grobY(childPhase, "north") + unit(childHeight / 2.0, "mm"),
+                               inflect = TRUE,
+                               arrow = arrow(type = "closed",
+                                             angle = 30,
+                                             length = unit(4, "mm")),
+                               gp = gpar(fill = "black", lwd = 1)),
+                    curveGrob(grobX(parentPhaseRight, "north"),
+                              grobY(parentPhaseRight, "south") - unit(parentRightHeight / 2.0, "mm"),
+                              grobX(childPhase, "south") + unit(5, "mm"),
+                              grobY(childPhase, "north") + unit(childHeight / 2.0, "mm"),
+                              inflect = TRUE, curvature = -1,
+                              arrow = arrow(type = "closed",
+                                            angle = 30,
+                                            length = unit(4, "mm")),
+                              gp = gpar(fill = "black", lwd = 1)))
+  return(allPhases)
 }
 
 # constructor for arrow that links exclusion (rightmost) phases
 excludePhase <- function (parentPhase, 
-                          exludedPhase) {
+                          exludedPhase, 
+                          allPhases) {
+                          
+  parentWidth <- convertWidth(parentPhase$children[[1]]$width, "mm", TRUE) 
+  excludeWidth <- convertWidth(exludedPhase$children[[1]]$width, "mm", TRUE)
   
-  grid.move.to(grobX(parentPhase, "east"), grobY(parentPhase, "east"))
-  grid.line.to(grobX(exludedPhase, "west"), grobY(exludedPhase, "east"), 
-               arrow = arrow(type = "closed", length = unit(4, "mm")), 
-               gp = gpar(fill = "black"))
+  allPhases <- gList(allPhases, 
+                     moveToGrob(grobX(parentPhase, "east")  + unit(parentWidth / 2.0, "mm"), 
+                                grobY(parentPhase, "east")),
+                     lineToGrob(grobX(exludedPhase, "west") - unit(excludeWidth / 2.0, "mm"), 
+                                grobY(exludedPhase, "east"), 
+                                arrow = arrow(type = "closed", 
+                                        length = unit(4, "mm")), 
+                                gp = gpar(fill = "black")))
+  return(allPhases)
 }
 
 # generate simplified phase scheme
