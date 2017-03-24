@@ -32,4 +32,3 @@ a plotted figure.
 \seealso{
 \link{figure_detectAllPoints}
 }
-

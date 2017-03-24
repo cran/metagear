@@ -21,4 +21,3 @@ Reads a .jpg, .jpeg, .png, or .tiff image file containing a plotted figure.
 \seealso{
 \link{figure_write}
 }
-

@@ -46,4 +46,3 @@ Cornfield, J. 1951. A method for estimating comparative rates
 
 Cox, D.R. 1970. The continuity correction. Biometrika 57: 217-219.
 }
-

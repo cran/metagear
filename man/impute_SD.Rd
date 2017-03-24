@@ -51,4 +51,3 @@ Rubin, D.B. and Schenker, N. 1991. Multiple imputation in
    health-care databases: an overview and some applications.  Statistics 
    in Medicine 10: 585-598.
 }
-

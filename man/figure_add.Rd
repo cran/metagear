@@ -29,4 +29,3 @@ detected points.
 \seealso{
 \link{figure_detectAllPoints}
 }
-

@@ -28,4 +28,3 @@ Generates random paired sample sizes (N).  For example, sample sizes for a
    treatment group and samples sizes for a control group.  These paired N 
    are often correlated within studies.
 }
-

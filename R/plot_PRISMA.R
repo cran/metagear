@@ -17,6 +17,10 @@
 #' @param excludeDistance An optional value designating the the distance of 
 #'    exclude phase box from the main flow diagram.  Larger values (> 0.8) 
 #'    increase this distance.
+#' @param design Designates the colorscheme and design of the the flow diagram.
+#'    The default is \code{classic} (as in versions of metagear prior to v. 0.4).
+#'    Others schemes are also available with color and more flat designs, and these
+#'    can be further customized; see NOTE below for these details.       
 #' @param hide When FALSE, the PRISMA flow diagram is not plotted.
 #'
 #' @return a grid object (grob) list 
@@ -32,7 +36,26 @@
 #'             "# of studies included in qualitative synthesis",
 #'             "EXCLUDE_PHASE: # studies excluded, incomplete data reported",
 #'             "final # of studies included in quantitative synthesis (meta-analysis)")
-#' plot_PRISMA(phases)
+#' plot_PRISMA(phases, design = "cinnamonMint")
+#'
+#' @note \strong{Using canned or custom PRISMA design layouts}\cr\cr There are 
+#'    several color schemes and design layouts (e.g. curved or flat) available. 
+#'    These designs include: \code{cinnamonMint}, \code{sunSplash}, \code{pomegranate},
+#'    \code{vintage}, \code{grey}, and \code{greyMono}. Custom schemes can also 
+#'    be developed by modifying each aspect of the design.  These are:
+#'    \describe{
+#'        \item{S}{color of start phases (default: white)}
+#'        \item{P}{color of the main phases (default: white)}
+#'        \item{E}{color of the exclusion phases (default: white)}
+#'        \item{F}{color of the final phase (default: white)}
+#'        \item{fontSize}{the size of the font (default: 12) }
+#'        \item{fontColor}{the font color (default: black)}
+#'        \item{fontFace}{either plain, bold, italic, or bold.italic (default: plain)}
+#'        \item{flatArrow}{arrows curved when FALSE (default); arrows square when TRUE}
+#'        \item{flatBox}{boxes curved when FALSE (default); Boxes square when TRUE}
+#'    } 
+#'    For example, changing the defaults to have red rather than white exclusion 
+#'    phases, and square boxes, would be: \code{design = c(E = "red", flatBox = TRUE)}.
 #'
 #' @references Moher, D., Liberati, A., Tetzlaff, J. and Altman, D.G.,
 #'    PRISMA Group. (2009) Preferred reporting items for systematic reviews and
@@ -44,14 +67,29 @@
 plot_PRISMA <- function (aPhaseVector, 
                          colWidth = 30,
                          excludeDistance = 0.8,
+                         design = "classic",
                          hide = FALSE) {
   
   grid.newpage(recording = FALSE)
   PRISMA_vp <- viewport(width = 1, height = 1)
   pushViewport(PRISMA_vp)
   
+  if(is.null(names(design)) == TRUE) {
+    prismaDesign <- designList[[design]]
+    if(is.null(prismaDesign)) {
+      .metagearPROBLEM("warning", "not an existing design scheme")
+      # revert to default design
+      prismaDesign <- aDesign()
+    }
+  } else {
+    prismaDesign <- do.call(aDesign, as.list(design))
+  }
+ 
   # generate all PRISMA phases with undefined x and y positions
-  theGrobs <- getPhaseGrobs(getPhaseClean(aPhaseVector), colWidth)
+  theGrobs <- getPhaseGrobs(getPhaseClean(aPhaseVector),
+                            getPhaseScheme(aPhaseVector),
+                            prismaDesign,
+                            colWidth)
 
   phaseScheme <- getPhaseScheme(aPhaseVector)
   startPhases <- phaseScheme %in% "S"
@@ -82,9 +120,16 @@ plot_PRISMA <- function (aPhaseVector,
       yCoordinates <- yCoordinates - yDistance
       lastBox <- movePhaseGrob(lastBox, y = yCoordinates)
       if(length(startIndex) > 1) {
-        theGrobs <- marryPhases(theGrobs[[1]], lastBox, theGrobs[[2]], theGrobs)
+        theGrobs <- marryPhases(theGrobs[[1]], 
+                                lastBox, 
+                                theGrobs[[2]], 
+                                prismaDesign, 
+                                theGrobs)
       } else {
-        theGrobs <- connectPhases(theGrobs[[1]], lastBox, theGrobs)
+        theGrobs <- connectPhases(theGrobs[[1]], 
+                                  lastBox, 
+                                  prismaDesign, 
+                                  theGrobs)
       }
       theGrobs[[endIndex[1]]] <- lastBox
       
@@ -101,10 +146,16 @@ plot_PRISMA <- function (aPhaseVector,
       }
       
       if (exclude == TRUE) {
-        theGrobs <- excludePhase(lastBox, theGrobs[[aPhase]], theGrobs)
+        theGrobs <- excludePhase(lastBox, 
+                                 theGrobs[[aPhase]], 
+                                 prismaDesign, 
+                                 theGrobs)
         exclude <- FALSE
       } else {
-        theGrobs <- connectPhases(lastBox, theGrobs[[aPhase]], theGrobs)
+        theGrobs <- connectPhases(lastBox, 
+                                  theGrobs[[aPhase]], 
+                                  prismaDesign, 
+                                  theGrobs)
         yCoordinates <- yCoordinates - yDistance
         lastBox <- theGrobs[[aPhase]]
       }

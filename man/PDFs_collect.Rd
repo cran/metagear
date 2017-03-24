@@ -74,4 +74,3 @@ PDFs_collect(aDataFrame = someRefs, DOIcolumn = "DOI",
 \seealso{
 \code{\link{PDF_download}}
 }
-

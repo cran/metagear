@@ -51,4 +51,3 @@ Landis, J.R., and Koch, G.G. 1977. The measurement of observer
 \code{\link{effort_initialize}}, \code{\link{effort_distribute}}, 
    \code{\link{effort_merge}}
 }
-

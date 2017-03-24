@@ -79,4 +79,3 @@ figure image.  The default returns these detected objects as an
 \code{EBImage} raster image, as well as the estimated effect size (correlation
 coefficient or r) of the data within the scatter-plot.
 }
-

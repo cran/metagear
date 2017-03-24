@@ -48,4 +48,3 @@ Randomly re-distributes screening tasks from one reviewers to the rest of the
 reviewing team.  Used when screening effort needs to be re-allocated among
 reviewing team members.
 }
-

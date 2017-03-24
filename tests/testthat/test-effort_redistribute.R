@@ -10,7 +10,7 @@ test_that("distribute effort among 2 then redistribute among 3 reviewers", {
   # move 50% of Luc's work to new reviewer Patsy
   aDataFrame <- effort_redistribute(aDataFrame, 
                                     reviewer = "Luc",
-                                    remove_effort = "50", 
+                                    remove_effort = 50, 
                                     reviewers = c("Luc", "Patsy"))
   testTable <- table(aDataFrame$REVIEWERS)
   expect_equal(as.numeric(testTable["Christina"]), 2)

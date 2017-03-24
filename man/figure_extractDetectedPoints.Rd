@@ -36,4 +36,3 @@ A data frame with the extracted X and Y values.
 \description{
 Extracts raw X and Y data from the points detected in a scatter-plot figure.
 }
-

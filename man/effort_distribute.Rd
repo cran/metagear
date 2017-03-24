@@ -62,4 +62,3 @@ effort_distribute(example_references_metagear, initialize = TRUE, reviewers = th
 \code{\link{effort_initialize}}, \code{\link{effort_merge}}, 
    \code{\link{effort_summary}}
 }
-

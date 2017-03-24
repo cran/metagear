@@ -16,4 +16,3 @@ An EBImage object depicting a scatterplot image from Figure 2 of Kam, M.,
    Ecology 17:496-503.
 }
 \keyword{datasets}
-

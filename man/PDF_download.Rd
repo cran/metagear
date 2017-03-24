@@ -44,4 +44,3 @@ download success.}
 \seealso{
 \code{\link{PDFs_collect}}
 }
-

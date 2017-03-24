@@ -42,4 +42,3 @@ effort_merge()
 \code{\link{effort_initialize}}, \code{\link{effort_distribute}}, 
    \code{\link{effort_summary}}
 }
-

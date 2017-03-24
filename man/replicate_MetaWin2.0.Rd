@@ -37,4 +37,3 @@ Rosenberg, M.S., Adams, D.C., and Gurevitch, J. 2000.
    MetaWin: Statistical Software for Meta-Analysis. Sinauer Associates 
    Sunderland, Massachusetts.
 }
-

@@ -5,7 +5,7 @@
 \title{Plots and creates a PRISMA flow diagram.}
 \usage{
 plot_PRISMA(aPhaseVector, colWidth = 30, excludeDistance = 0.8,
-  hide = FALSE)
+  design = "classic", hide = FALSE)
 }
 \arguments{
 \item{aPhaseVector}{A vector of ordered labels (strings) for each phase of
@@ -19,6 +19,11 @@ box of each phase.}
 \item{excludeDistance}{An optional value designating the the distance of 
 exclude phase box from the main flow diagram.  Larger values (> 0.8) 
 increase this distance.}
+
+\item{design}{Designates the colorscheme and design of the the flow diagram.
+The default is \code{classic} (as in versions of metagear prior to v. 0.4).
+Others schemes are also available with color and more flat designs, and these
+can be further customized; see NOTE below for these details.}
 
 \item{hide}{When FALSE, the PRISMA flow diagram is not plotted.}
 }
@@ -34,6 +39,26 @@ Creates a PRISMA (Preferred Reporting Items for Systematic Reviews and
    meta-analysis.  NOTE: currently only supports two start phases, and final
    phase must not have an exclude branch.
 }
+\note{
+\strong{Using canned or custom PRISMA design layouts}\cr\cr There are 
+   several color schemes and design layouts (e.g. curved or flat) available. 
+   These designs include: \code{cinnamonMint}, \code{sunSplash}, \code{pomegranate},
+   \code{vintage}, \code{grey}, and \code{greyMono}. Custom schemes can also 
+   be developed by modifying each aspect of the design.  These are:
+   \describe{
+       \item{S}{color of start phases (default: white)}
+       \item{P}{color of the main phases (default: white)}
+       \item{E}{color of the exclusion phases (default: white)}
+       \item{F}{color of the final phase (default: white)}
+       \item{fontSize}{the size of the font (default: 12) }
+       \item{fontColor}{the font color (default: black)}
+       \item{fontFace}{either plain, bold, italic, or bold.italic (default: plain)}
+       \item{flatArrow}{arrows curved when FALSE (default); arrows square when TRUE}
+       \item{flatBox}{boxes curved when FALSE (default); Boxes square when TRUE}
+   } 
+   For example, changing the defaults to have red rather than white exclusion 
+   phases, and square boxes, would be: \code{design = c(E = "red", flatBox = TRUE)}.
+}
 \examples{
 phases <- c("START_PHASE: # of studies identified through database searching",
             "START_PHASE: # of additional studies identified through other sources",
@@ -45,7 +70,7 @@ phases <- c("START_PHASE: # of studies identified through database searching",
             "# of studies included in qualitative synthesis",
             "EXCLUDE_PHASE: # studies excluded, incomplete data reported",
             "final # of studies included in quantitative synthesis (meta-analysis)")
-plot_PRISMA(phases)
+plot_PRISMA(phases, design = "cinnamonMint")
 
 }
 \references{
@@ -53,4 +78,3 @@ Moher, D., Liberati, A., Tetzlaff, J. and Altman, D.G.,
    PRISMA Group. (2009) Preferred reporting items for systematic reviews and
    meta-analyses: the PRISMA statement. BMJ 339, b2535.
 }
-

@@ -26,4 +26,3 @@ presented with different colors.
 \seealso{
 \code{\link{figure_transformToBinary}}
 }
-

@@ -20,4 +20,3 @@ A logical value indicating whether the file is a PDF document.
 \description{
 Checks if provided file is in Portable Document Format (PDF).
 }
-

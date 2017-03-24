@@ -31,4 +31,3 @@ Generates a raster image of a figure with the detected points painted on a
 \seealso{
 \link{figure_displayDetections}
 }
-

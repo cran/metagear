@@ -26,4 +26,3 @@ A RGB \code{EBImage} painted with detected figure objects.
 Generates a raster image of a figure with the detected objects painted on a 
    background/reference figure.
 }
-

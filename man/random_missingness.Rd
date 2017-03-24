@@ -24,4 +24,3 @@ A data table with columns of missing data (specified as \code{NA}'s).
 Generates random \code{NA}'s in in a column or groups of columns of a data frame.
 Used in imputation simulations based on complete datasets.
 }
-

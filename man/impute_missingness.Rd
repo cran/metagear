@@ -24,4 +24,3 @@ data(example_references_metagear)
 impute_missingness(example_references_metagear)
 
 }
-

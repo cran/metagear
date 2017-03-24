@@ -14,4 +14,3 @@ An EBImage object depicting a bar plot image from Figure 4 of Kortum, P., and
    range restricted? Journal of Usability Studies 9:14-24.
 }
 \keyword{datasets}
-

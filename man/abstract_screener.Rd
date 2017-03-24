@@ -9,7 +9,7 @@ abstract_screener(file = file.choose(), aReviewer = NULL,
   reviewerColumnName = "REVIEWERS", unscreenedColumnName = "INCLUDE",
   unscreenedValue = "not vetted", abstractColumnName = "ABSTRACT",
   titleColumnName = "TITLE",
-  browserSearch = "https://www.google.com/search?q=", protect = "FALSE",
+  browserSearch = "https://www.google.com/search?q=", protect = FALSE,
   fontSize = 13, windowWidth = 700, windowHeight = 510, buttonSize = 50)
 }
 \arguments{
@@ -49,7 +49,7 @@ that contains the titles. The default label of this column is "TITLE".}
 default is Google.}
 
 \item{protect}{When \code{"TRUE"}, prevents the title and abstract from being
-clicked or edited.}
+clicked, selected or edited.}
 
 \item{fontSize}{Change the font size of the title and abstract text.}
 
@@ -105,4 +105,3 @@ abstract_screener("effort_marc.csv", aReviewer = "marc")
 }
 
 }
-

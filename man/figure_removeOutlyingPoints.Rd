@@ -26,4 +26,3 @@ Removes all detected points outside of axis range.  Requires three detected
 images: one based on \code{\link{figure_detectAllPoints}}, and two others based on 
 detected X- and Y-axes (i.e. \code{\link{figure_detectAxis}})
 }
-

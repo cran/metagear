@@ -41,4 +41,3 @@ print(paste("citations = ", theWOSRef$N_citations))
 }
 
 }
-

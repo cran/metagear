@@ -36,4 +36,3 @@ figure image (even those lying outside of the axis range).
 \seealso{
 \code{\link{figure_detectAxis}}
 }
-

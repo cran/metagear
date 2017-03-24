@@ -1,11 +1,13 @@
 
 ---
-title: <p><br></p>Basic examples of screening studies, extracting data and meta-analysis
-  with the ***metagear*** package for *R* <p><br></p>
+title: |
+  <p><br><img src="http://lajeunesse.myweb.usf.edu/metagear/metagear2.png" alt="" style="width:140px;height:140px;margin:0px 20px 0px 0px;" align="left"></p>Basic examples of screening studies, extracting data and meta-analysis with the ***metagear***  package for *R* <p><br></p>
 author: '[Marc J. Lajeunesse](http://lajeunesse.myweb.usf.edu/)'
-date: University of South Florida, January 3rd 2017 (vignette v. 0.3.1 for metagear
-  v. 0.3) <p><br></p>   <p><br></p>
+date: University of South Florida, March 24nd 2017 (vignette v. 0.4 for metagear v.
+  0.4) <p><br></p>   <p><br></p>
 output:
+  word_document:
+    toc: yes
   pdf_document:
     keep_tex: yes
     latex_engine: xelatex
@@ -13,7 +15,6 @@ output:
   html_document:
     smart: no
     toc: yes
-  word_document: default
 ---
 
 
@@ -32,7 +33,7 @@ options(width = 800)
 
 The **metagear** package for [R](http://www.r-project.org/) contains tools for facilitating [systematic reviews](https://en.wikipedia.org/wiki/Systematic_review), data extraction, and [meta-analyses](https://en.wikipedia.org/wiki/Meta-analysis).  It aims to facilitate research synthesis as a whole, by providing a single source for several of the common tasks involved in screening studies, extracting outcomes from studies, and performing statistical analyses on these outcomes using meta-analysis.  Below are a few illustrative examples of applications of these functionalities.  
 
-Updates to these examples will be posted on our [research webpage at USF](http://lajeunesse.myweb.usf.edu/), and for previous versions of this vignette see [v. 0.2](http://lajeunesse.myweb.usf.edu/metagear/metagear_basic_vignette_v0.2.html) and [v. 0.1](http://lajeunesse.myweb.usf.edu/metagear/metagear_basic_vignette_v0.1.html).
+Updates to these examples will be posted on our [research webpage at USF](http://lajeunesse.myweb.usf.edu/), and for previous vignette versions see [v. 0.3](http://lajeunesse.myweb.usf.edu/metagear/metagear_basic_vignette_v0.3.html), [v. 0.2](http://lajeunesse.myweb.usf.edu/metagear/metagear_basic_vignette_v0.2.html) and [v. 0.1](http://lajeunesse.myweb.usf.edu/metagear/metagear_basic_vignette_v0.1.html).
 
 For the source code of **metagear** see: <http://cran.r-project.org/web/packages/metagear/index.html>.
 
@@ -71,7 +72,7 @@ biocLite("EBImage")
 library(metagear)
 ```
 
-The first loading of **metagear** using `library(metagear)` will trigger the download of the **gWidgets** package and associated toolkits needed to build GUI interfaces. A small window will also prompt you to download GTK+ asking "Need GTK+ ?". From the listed options answer: "Install GTK+" and click ’OK’. Once installed, these will not be downloaded again. 
+The first loading of **metagear** using `library(metagear)` will trigger the download of the **gWidgets** package and associated toolkits needed to build GUI interfaces. A small window will also prompt you to download GTK+ asking "Need GTK+ ?". From the listed options answer: "Install GTK+" and click "OK". Once installed, these will not be downloaded again. 
 
 Sometimes there is an issue with the installation of GTK+, see [here](http://www.learnanalytics.in/blog/?p=31) or  [here](http://lajeunesse.myweb.usf.edu/metagear/Installing_ Rattle.pdf) for advice based on the **Rattle** R Package. Note that both **Rattle** and **metagear** use the same GUI dependencies.  **Also sometimes the installation will freeze; however, re-starting the R session can fix this issue.**
 
@@ -148,7 +149,7 @@ The effort can also be redistributed with the `effort_redistribute()` function. 
 ```{r}
 theRefs_Patsy <- effort_redistribute(theRefs_unscreened, 
                                      reviewer = "Luc",
-                                     remove_effort = "50", # move 50% of Luc's work to Patsy
+                                     remove_effort = 50, # move 50% of Luc's work to Patsy
                                      reviewers = c("Luc", "Patsy")) # team members loosing and picking up work
 theRefs_Patsy[c("STUDY_ID", "REVIEWERS")]
 ```
@@ -373,7 +374,7 @@ table(collectionOutcomes$downloadOutcomes)
 ```
 
 ```{r,echo=FALSE,results="hide"}
-# HIDDEN: clean up generated files
+# HIDDEN: clean up downloaded files
 lapply(c("1.pdf", "3.pdf", "4.pdf", "5.pdf", "6.1.pdf", "6.2.pdf", "8.pdf", "10.pdf", "11.pdf"), file.remove)
 ```
 
@@ -430,9 +431,80 @@ phases <- c("START_PHASE: # of studies identified through database searching",
 thePlot <- plot_PRISMA(phases)
 ```
 
+## Generating different PRISMA plot layouts
+
+There are also several different PRISMA plot layouts available to generate simpler or more colourful schemes.  Below are a few of the various designs available, and for example, here the `cinnamonMint` scheme can be generated using: `plot_PRISMA(phases, design = "cinnamonMint")`.
+
+```{r,echo=FALSE,fig.height=10,fig.width=10}
+# load package
+library(metagear)
+
+phases <- c("START_PHASE: # of studies identified through database searching",
+            "START_PHASE: # of additional studies identified through other sources",
+            "# of studies after duplicates removed",
+            "# of studies with title and abstract screened",
+            "EXCLUDE_PHASE: # of studies excluded",
+            "# of full-text articles assessed for eligibility",
+            "EXCLUDE_PHASE: # of full-text articles excluded, not fitting eligibility criteria",
+            "# of studies included in qualitative synthesis",
+            "EXCLUDE_PHASE: # studies excluded, incomplete data reported",
+            "final # of studies included in quantitative synthesis (meta-analysis)")
+
+# plot various PRISMA design layouts
+par(mfrow = c(2, 2), las = 1)
+designExamples <- c("cinnamonMint", "grey", "greyMono", "vintage")
+for(i in designExamples) {
+  theFile <- paste0(i, ".png")
+  png(theFile, width = 12, height = 12, units = "in", res = 450)
+    plot_PRISMA(phases, design = i)
+  dev.off() 
+  figure_display(theFile)
+  mtext(i, side = 2, line = -2, col = "black", cex = 0.9)
+  file.remove(theFile)
+}
+
+```
+
+
+It is also possible to individually customize various design features of the PRISMA plot.  Here are some of the features that can be modified:
+
+| parameter | options   |
+|-----+-------|
+| S  | color of start phases (default: white) |
+| P  | color of the main phases (default: white) |
+| E  | color of the exclusion phases (default: white) |
+| F  | color of the final phase (default: white) |
+| fontSize  | the size of the font (default: 12) |
+| fontColor  | the font color (default: black)  |
+| fontFace  | either plain, bold, italic, or bold.italic (default: plain) |
+| flatArrow  | arrows curved when FALSE (default); arrows square when TRUE  |
+| flatBox  | boxes curved when FALSE (default); boxes square when TRUE  |
+
+
+Here's a quick example on how to change the color of the exclusion phases:
+
+```{r, fig.height=9,fig.width=10}
+# load package
+library(metagear)
+
+phases <- c("START_PHASE: # of studies identified through database searching",
+            "# of studies after duplicates removed",
+            "# of studies with title and abstract screened",
+            "EXCLUDE_PHASE: # of studies excluded",
+            "# of full-text articles assessed for eligibility",
+            "EXCLUDE_PHASE: # of full-text articles excluded, not fitting eligibility criteria",
+            "# of studies included in qualitative synthesis",
+            "EXCLUDE_PHASE: # studies excluded, incomplete data reported",
+            "final # of studies included in quantitative synthesis (meta-analysis)")
+
+# PRISMA plot with custom layout
+thePlot <- plot_PRISMA(phases, design = c(E = "lightcoral", flatArrow = TRUE))
+```
+
+
 ## Notes on PRISMA plotting since metagear v. 0.1 and 0.2
 
-Previous versions of **metagear** (v. 0.2 and 0.1) offered a more flexible version of `plot_PRISMA()` that allowed for proper rescaling of PRISMA objects when the user mannualy changed the window size of the plot.  Unfortunatly, this version did not load well when bundled with the package and yeilded unusual plots (I would love to hear any tips on how to properly manage viewports and grid objects within a package!).  Anyway, these versions are available on my website and allow for higher-quality PRISMA plots; these old functions can be downloaded [ here ](http://lajeunesse.myweb.usf.edu/metagear/metagear_PRISMA_plot_Lajeunesse.zip) and work best when not loaded with **metagear**. 
+Previous versions of **metagear** (v. 0.2 and 0.1) offered a more flexible version of `plot_PRISMA()` that allowed for proper rescaling of PRISMA objects when the user manually changed the window size of the plot.  Unfortunately, this version did not load well when bundled with the package and yielded unusual plots (I would love to hear any tips on how to properly manage viewports and grid objects within a package!).  Anyway, these versions are available on my website and allow for higher-quality PRISMA plots; these old functions can be downloaded [ here ](http://lajeunesse.myweb.usf.edu/metagear/metagear_PRISMA_plot_Lajeunesse.zip) and work best when not loaded with **metagear**. 
 
 <p><br></p>
 <center>![Section Break](http://lajeunesse.myweb.usf.edu/metagear/Dots_Divider.png)</center>
@@ -624,7 +696,7 @@ rawData2 <- figure_barPlot("example_2_barPlot.jpg",
 file.remove("example_2_barPlot.jpg")
 ```
 
-The function also detected the right-most vertical line (part of the the figure box) as a datapoint.  The options of `figure_barPlot()` can be tweaked to avoid this issue; however, it might be easier to just exclude this extraction given that it has the largest plant biomass value (i.e. close to 10).  Let's exclude this false datapoint and organize the dataset as presented in the figure.
+The function also detected the right-most vertical line (part of the figure box) as a datapoint.  The options of `figure_barPlot()` can be tweaked to avoid this issue; however, it might be easier to just exclude this extraction given that it has the largest plant biomass value (i.e. close to 10).  Let's exclude this false datapoint and organize the dataset as presented in the figure.
 
 ```{r}
 # exclude the false detection
@@ -647,7 +719,7 @@ organizedData
 
 ---
 
-Typically an effect size quantified with a response ratio uses the means (X), standard deviations (SD), and sample sizes (N) from single control (C) and treatment (T) groups.  However, some studies will compare multiple treatment groups to a single control. 
+Typically an effect size quantified with a response ratio uses the means ($\bar{X}$), standard deviations ($\mathit{SD}$), and sample sizes (${N}$) from single control (C) and treatment (T) groups.  However, some studies will compare multiple treatment groups to a single control. 
 
 Here we will replicate the meta-analysis example presented in Lajeunesse (2011; Ecology 92, 2049-2055) for modeling effect sizes that share a common control.
 
@@ -676,7 +748,9 @@ V <- covariance_commonControl(theData,
 round(V[[1]], 3)
 ```
 
-Note the off-diagonals of the matrix are non-zero; this structure models the shared variance (covariance) among the three effect sizes due to the common control.  The equation for the common-control covariance is simple: (X_C ^ 2) / N_C .  
+Note the off-diagonals of the matrix are non-zero; this structure models the shared variance (covariance) among the three effect sizes due to the common control.  The equation for the common-control covariance between two respponse ratio effect sizes is:
+
+$${cov(\mathit{\mathit{RR}}_{A,C},~\mathit{RR}_{B,C})=\frac{(\mathit{SD}_C)^2}{N_C\bar{X}_C^2}.}$$  
 
 Now let's use this matrix to model the dependent effect sizes in a meta-analysis.  Here we will conduct a simple fixed-effect meta-analysis as presented by Lajeunesse (2011) using the **metafor** R package.
 
@@ -714,6 +788,9 @@ Kortum, P., and Acymyan, C.Z. 2013. How low can you go? Is the System Usability 
 </p>
 <p style = "text-indent: -30pt; margin-left:60pt; margin-right:60pt;">
 Lajeunesse, M.J. (2011) On the meta-analysis of response ratios for studies with correlated and multi-group designs. *Ecology* **92**: 2049-2055. 
+</p>
+<p style = "text-indent: -30pt; margin-left:60pt; margin-right:60pt;">
+Lajeunesse, M.J. (2016) Facilitating systematic reviews, data extraction and meta-analysis with the *metagear* package for *R*.  *Methods in Ecology and Evolution* **7**: 323-330. 
 </p>
 <p style = "text-indent: -30pt; margin-left:60pt; margin-right:60pt;">
 Liberati, A., Altman, D.G., Tetzlaff, J., Mulrow, C., Gotzsche, P.C., Ioannidis, J.P., Clarke, M., Devereaux, P.J., Kleijnen, J., and Moher, D. (2009) The PRISMA statement for reporting systematic reviews and meta-analyses of studies that evaluate health care interventions: explanation and elaboration. *PLoS Medicine* **6**: e1000100.

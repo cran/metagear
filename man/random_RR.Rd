@@ -52,4 +52,3 @@ Hedges, L.V., J. Gurevitch, and P.S. Curtis. 1999. The
 Lajeunesse, M.J. 2015. Bias and correction for the log response
    ratio used in ecological meta-analysis. Ecology.
 }
-

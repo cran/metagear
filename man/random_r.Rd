@@ -42,4 +42,3 @@ Fisher, R.A. 1915. Frequency distribution of the values of the
    correlation coefficient in samples of an indefinitely large 
    population. Biometrika 10: 507-521.
 }
-

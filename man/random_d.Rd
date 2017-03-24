@@ -51,4 +51,3 @@ Hedges, L.V. 1981. Distribution theory for Glass's estimator of
 Hedges, L.V. 1982. Estimation of effect size from a series of 
    independent experiments. Psychological Bulletin 92: 490-499.
 }
-

@@ -18,4 +18,3 @@ Tries to extract images within a PDF file.  Currently does not support
 decoding of images in CCITT compression formats. However, will still save 
 these images to file; as a record of the number of images detected in the PDF.
 }
-

@@ -76,4 +76,3 @@ bars in the figure these will be grouped with the detected bar column.  However,
 within these X-axis positioning they will not be sorted.  See vignette for
 worked several illustrations.
 }
-

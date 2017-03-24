@@ -44,4 +44,3 @@ effort_initialize(example_references_metagear)
 \code{\link{effort_distribute}}, \code{\link{effort_merge}}, 
    \code{\link{effort_summary}}
 }
-

@@ -99,7 +99,7 @@ PDFobjectToImageFile <- function (objectLocation,
   
   # parse object by stream & endstream
   parsedImageObject <-  unlist(strsplit(theObjects[objectLocation], "stream"))
-  
+
   # extract key char locations of image in PDF with trailingChars as a correction 
   # for "stream" being followed by 2 return characters 
   trailingChars <- "  "
@@ -116,9 +116,14 @@ PDFobjectToImageFile <- function (objectLocation,
                            offset = PDFLocation + startImageLocation, 
                            nbytes = endImageLocation, machine = "binary")
   
+  # sometimes some of the orginal file format unicode is missing, this helps clean
+  # this issue for jpgs at least
+  if((PDFImageBlock$fileRaw[1] == "d8") && (PDFImageBlock$fileRaw[2] == "ff"))
+      PDFImageBlock$fileRaw <- c(as.raw('0xff'), PDFImageBlock$fileRaw)
+  
   # save binary of image to new file
   detectedImageFile <- file(imageFileName, "wb")
-  writeBin(PDFImageBlock$fileRaw, detectedImageFile)
+    writeBin(PDFImageBlock$fileRaw, detectedImageFile)
   close(detectedImageFile)
   
   # TO DO RETURN INFO ABOUT SUCCESSFUL FILE SAVE

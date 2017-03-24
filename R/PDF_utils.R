@@ -1,11 +1,14 @@
 # evaluate whether the URL is available
 is.URLconnectable <- function(theURL) {
-  aConnection <- suppressWarnings(try(url(theURL, open = "rb"), 
+  aConnection <- suppressWarnings(try(url(theURL, 
+                                          open = "rb"), 
                                       silent = TRUE))
   if(inherits(aConnection, "try-error")) return(FALSE)
   close(aConnection)
   return(TRUE)
 }
+
+
 
 # collect HTML as large vector
 getHTMLfromURL <- function(theURL) {

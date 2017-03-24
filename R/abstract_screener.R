@@ -32,7 +32,7 @@
 #' @param browserSearch Change the url for the browser title search; the 
 #'    default is Google.
 #' @param protect When \code{"TRUE"}, prevents the title and abstract from being
-#'    clicked or edited. 
+#'    clicked, selected or edited. 
 #' @param fontSize Change the font size of the title and abstract text.
 #' @param windowWidth Change the default width of the GUI window.
 #' @param windowHeight Change the default height of the GUI window.
@@ -93,7 +93,7 @@ abstract_screener <- function(file = file.choose(),
                               abstractColumnName = "ABSTRACT",
                               titleColumnName = "TITLE",
                               browserSearch = "https://www.google.com/search?q=",
-                              protect = "FALSE",
+                              protect = FALSE,
                               fontSize = 13,
                               windowWidth = 700,
                               windowHeight = 510,
@@ -113,7 +113,8 @@ abstract_screener <- function(file = file.choose(),
                            "first")
   } else {
     .metagearPROBLEM("error",
-                     "all abstracts have already been screened")
+                     paste("all abstracts have already been screened, 
+                           no more abstracts coded as:", unscreenedValue))
   }
   
   
@@ -166,7 +167,7 @@ abstract_screener <- function(file = file.choose(),
   
   # used to update the reference list
   theAnswer <- function(theValue, ...) {
-    if(subData[currentItem, unscreenedColumnName] != theValue) {
+    if(subData[currentItem, unscreenedColumnName] != unscreenedValue) {
       confirmDialog(theValue, oldValue = subData[currentItem, unscreenedColumnName])
     } else {
       updateAll(theValue, ...)
@@ -243,6 +244,7 @@ abstract_screener <- function(file = file.choose(),
                          container = frame_ABSTRACT, 
                          expand = TRUE, 
                          font.attr = list(style = "bold", size = fontSize))
+
   size(text_ABSTRACT) <- c(windowWidth + 50, windowHeight)
   
   if(protect == TRUE) enabled(text_ABSTRACT) <- FALSE

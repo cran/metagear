@@ -42,12 +42,11 @@ the Rattle R Package. Note that both \pkg{Rattle} and \pkg{metagear} use the
 same GUI dependencies. \cr\cr Finally, sometimes the installation will freeze; 
 however, re-starting the R session can fix this issue.
 }
-\author{
-Marc J. Lajeunesse (University of South Florida, Tampa USA)
-}
 \references{
 Pau, G., Fuchs, F., Sklyar, O., Boutros, M. and Huber, W. (2010)
 EBImage: an R package for image processing with applications to cellular
 phenotypes. Bioinformatics 26: 979-981.
 }
-
+\author{
+Marc J. Lajeunesse (University of South Florida, Tampa USA)
+}

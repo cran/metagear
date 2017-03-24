@@ -28,4 +28,3 @@ Transforms a figure into a black and white image.  This pre-processing of the
 image is necessary to help identify objects within the figure (e.g., axes, 
 plotted points).
 }
-

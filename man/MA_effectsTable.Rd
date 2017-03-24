@@ -35,4 +35,3 @@ DerSimonian, R., and N. Laird. 1986. Meta-analysis in clinical
 Hedges, L.V., and I. Olkin. 1985. Statistical methods for 
    meta-analysis. Academic Press, New York, USA.
 }
-

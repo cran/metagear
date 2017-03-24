@@ -1,6 +1,17 @@
 Lajeunesse, M.J. (2016) Facilitating systematic reviews, data extraction and meta-analysis with the metagear package for R. Methods in Ecology and Evolution 7, 323−330.
 
 
+# metagear 0.4 (3/14/17)
+
+* As of Jan/2017, Elsevier added numerous redirects and cookies for their PDF downloads; consequently, metagear is (sometimes) no longer able to extract PDFs from this publisher; this also broke an entire vignette section :(
+* Updated vignette to reflect low download success of Elsevier journal articles
+* Fixed effort_redistribute() bug that incorrectly calculated effort % for distribution of references (thanks to Melanie Hartley for making me aware of this issue)
+* Added new color and style themes for PRISMA flow charts via the plot_PRISMA(); this includes several flat schemes
+* Fixed PDF_extractImages() bug preventing some of the extracted images from being recognized as image files (was an SOI file signature problem for some jpg formats)
+* Fixed bug in abstract_screener() that continuously prompted a validation check when screening abstracts
+* Added figure_split() to automatically split-up a figure image with multiple inlaid plots
+
+
 # metagear 0.3 (01/03/17)
 
 * Updated abstract_screener() to include options for changing the default settings of GUI window size, font size, button sizes, url of search engine, or text protection (thanks to Maria Gatta for this suggestion). A menu bar was also added to help quickly fix screening errors.
@@ -19,7 +30,6 @@ Lajeunesse, M.J. (2016) Facilitating systematic reviews, data extraction and met
 * Fixed "In file(con, "r") : InternetOpenUrl failed: 'The operation timed out'" error when trying to download > 40 PDFs with PDFs_collect(). Establishing connections via wininet largely fixes this issue on Windows computers. 
 * Added PDF figure/image extractor
 * Updated replicate_metawin2.0: fixed issues with resampling analyses, and confidence interval estimation
-
 
 
 # metagear 0.2 (8/18/15)

@@ -21,4 +21,3 @@ Writes a figure image to file and returns the file name.
 \seealso{
 \code{\link{figure_read}}
 }
-

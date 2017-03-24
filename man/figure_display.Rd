@@ -24,4 +24,3 @@ figure, or plots an EBImage object.
 \seealso{
 \link{figure_read}
 }
-

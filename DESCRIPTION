@@ -1,8 +1,8 @@
 Package: metagear
-Version: 0.3
-Date: 2017-01-3
+Version: 0.4
+Date: 2017-03-24
 Title: Comprehensive Research Synthesis Tools for Systematic Reviews
-        and Meta- Analysis
+        and Meta-Analysis
 Author: Marc J. Lajeunesse [aut, cre]
 Maintainer: Marc J. Lajeunesse <lajeunesse@usf.edu>
 Description: Functionalities for facilitating systematic reviews, data
@@ -24,7 +24,7 @@ Description: Functionalities for facilitating systematic reviews, data
     DBI-1262545 and DEB-1451031.
 Type: Package
 Depends: R (>= 3.3.2)
-Imports: EBImage (>= 4.16.0), gWidgetsRGtk2 (>= 0.0-83), gWidgets (>=
+Imports: EBImage (>= 4.14.0), gWidgetsRGtk2 (>= 0.0-83), gWidgets (>=
         0.0-54), hexView (>= 0.3-3), Matrix (>= 1.2-7.1), MASS (>=
         7.3-45), metafor (>= 1.9-9), RCurl (>= 1.95-4.8), stringr (>=
         1.1.0)
@@ -33,9 +33,9 @@ License: GPL (>= 2)
 URL: http://lajeunesse.myweb.usf.edu
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 Suggests: testthat, R.rsp
 NeedsCompilation: no
-Packaged: 2017-01-03 15:12:12 UTC; lajeunesse
+Packaged: 2017-03-24 16:39:11 UTC; lajeunesse
 Repository: CRAN
-Date/Publication: 2017-01-03 16:25:57
+Date/Publication: 2017-03-24 19:02:58 UTC
