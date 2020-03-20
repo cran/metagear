@@ -4,9 +4,16 @@
 \alias{figure_extractDetectedPoints}
 \title{Extracts data points from a detected image.}
 \usage{
-figure_extractDetectedPoints(aDetectedPlot, xAxis = NULL, yAxis = NULL,
-  X_min = NULL, X_max = NULL, Y_min = NULL, Y_max = NULL,
-  summarize = TRUE)
+figure_extractDetectedPoints(
+  aDetectedPlot,
+  xAxis = NULL,
+  yAxis = NULL,
+  X_min = NULL,
+  X_max = NULL,
+  Y_min = NULL,
+  Y_max = NULL,
+  summarize = TRUE
+)
 }
 \arguments{
 \item{aDetectedPlot}{A binary figure image with detected points (an 

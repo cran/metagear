@@ -17,7 +17,8 @@
 #'
 #' @return A single data.frame merged from multiple files.
 #'
-#' @examples
+#' @examples \dontrun{
+#'
 #' data(example_references_metagear)
 #' theTeam <- c("Christina", "Luc")
 #' # warning effort_distribute below, will save two files to working 
@@ -25,6 +26,7 @@
 #' effort_distribute(example_references_metagear, initialize = TRUE, 
 #'                   reviewers = theTeam, save_split = TRUE)
 #' effort_merge()
+#' }
 #'
 #' @seealso \code{\link{effort_initialize}}, \code{\link{effort_distribute}}, 
 #'    \code{\link{effort_summary}}

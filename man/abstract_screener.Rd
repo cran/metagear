@@ -5,30 +5,42 @@
 \title{A GUI screener to quickly code candidate studies for inclusion/exclusion into
 a systematic review or meta-analysis.}
 \usage{
-abstract_screener(file = file.choose(), aReviewer = NULL,
-  reviewerColumnName = "REVIEWERS", unscreenedColumnName = "INCLUDE",
-  unscreenedValue = "not vetted", abstractColumnName = "ABSTRACT",
+abstract_screener(
+  file = file.choose(),
+  aReviewer = NULL,
+  reviewerColumnName = "REVIEWERS",
+  unscreenedColumnName = "INCLUDE",
+  unscreenedValue = "not vetted",
+  abstractColumnName = "ABSTRACT",
   titleColumnName = "TITLE",
-  browserSearch = "https://www.google.com/search?q=", protect = FALSE,
-  fontSize = 13, windowWidth = 700, windowHeight = 510, buttonSize = 50)
+  browserSearch = "https://www.google.com/search?q=",
+  fontSize = 13,
+  windowWidth = 70,
+  windowHeight = 16,
+  theButtons = c("YES", "maybe", "NO"),
+  keyBindingToButtons = c("y", "m", "n"),
+  buttonSize = 10,
+  highlightColor = "powderblue",
+  highlightKeywords = NA
+)
 }
 \arguments{
-\item{file}{The file name and location of a .csv file containing the 
+\item{file}{The file name and location of a .csv file containing the
 abstracts and titles.  The .csv file should have been initialized with
 \code{effort_initialize} and populated with screeners (reviewers) using
 \code{effort_distribute}.}
 
 \item{aReviewer}{The name (a string) of the reviewer to screen abstracts.
 It is used when there are multiple reviewers assigned to screen abstracts.
-The default column label is "REVIEWERS" as initialized with 
+The default column label is "REVIEWERS" as initialized with
 \code{effort_distribute}.}
 
-\item{reviewerColumnName}{The name of the column heading in the .csv file 
-that contains the reviewer names that will screen abstracts.  The default 
+\item{reviewerColumnName}{The name of the column heading in the .csv file
+that contains the reviewer names that will screen abstracts.  The default
 column label is "REVIEWERS".}
 
-\item{unscreenedColumnName}{The name of the column heading in the .csv file 
-that contains the screening outcomes (i.e. vetting outcomes by a reviewer). 
+\item{unscreenedColumnName}{The name of the column heading in the .csv file
+that contains the screening outcomes (i.e. vetting outcomes by a reviewer).
 Unscreened references are by default labeled as "not vetted".  The
 reviewer then can code to "YES" (is a relevant study), "NO" is not relevant
 and should be excluded, or "MAYBE" if the title/abstract is missing or
@@ -38,70 +50,84 @@ The default label of this column is "INCLUDE".}
 \item{unscreenedValue}{Changes the default coding (a string) of "not vetted"
 that designates whether an abstract remains to be screened or vetted.}
 
-\item{abstractColumnName}{The name of the column heading in the .csv file 
-that contains the abstracts. The default label of this column is 
+\item{abstractColumnName}{The name of the column heading in the .csv file
+that contains the abstracts. The default label of this column is
 "ABSTRACT".}
 
-\item{titleColumnName}{The name of the column heading in the .csv file 
+\item{titleColumnName}{The name of the column heading in the .csv file
 that contains the titles. The default label of this column is "TITLE".}
 
-\item{browserSearch}{Change the url for the browser title search; the 
+\item{browserSearch}{Change the url for the browser title search; the
 default is Google.}
 
-\item{protect}{When \code{"TRUE"}, prevents the title and abstract from being
-clicked, selected or edited.}
-
-\item{fontSize}{Change the font size of the title and abstract text.}
+\item{fontSize}{Change the font gWidgets::size of the title and abstract text.}
 
 \item{windowWidth}{Change the default width of the GUI window.}
 
 \item{windowHeight}{Change the default height of the GUI window.}
 
-\item{buttonSize}{Change the default size of the "YES" and "NO" buttons.}
+\item{theButtons}{A vector of coding buttons included on the screener. The
+default is YES, maybe, and NO. Buttons can be removed as added by changing
+this vector. For example, theButtons = c("YES", "NO") to remove the
+maybe-button, or theButtons = c("YES", "maybe", NO", "model") to add a
+"model" button that tags studies specifically as "model".}
+
+\item{keyBindingToButtons}{A vector of specific keyboard bindings to buttons.
+They are keyboard shortcuts to buttons and the default binding is y for
+YES-button, m for maybe-button, and n for NO-button. If theButtons parameter
+is modified then these keybindings should also be modified.}
+
+\item{buttonSize}{Change the default gWidgets::size of buttons.}
+
+\item{highlightColor}{The color of keywords highlighted in title and abstract.
+The default is blue, but for classic yellow use "palegoldenrod".}
+
+\item{highlightKeywords}{A string or list of keywords that will be highlighted
+in title and abstract.}
 }
 \description{
-A GUI screener to help scan and evaluate the title and abstract of studies to 
+A GUI screener to help scan and evaluate the title and abstract of studies to
 be included in a systematic review or meta-analysis.
 }
 \note{
-\strong{Installation and troubleshooting}\cr\cr Upon first use, 
-   \code{abstract_screener} will download the gWidgets package
-   and associated toolkits needed to build GUI interfaces.  A small window will
-   also prompt you to download GTK+ asking "Need GTK+ ?".  From the listed
-   options answer: "Install GTK+" and click 'OK'.  Once installed these will
-   not be downloaded again.  Sometimes there is an issue with the installation
-   of GTK+, see \url{http://www.learnanalytics.in/blog/?p=31} for advice based 
-   on the \code{Rattle} R Package (both \code{Rattle} and \code{metagear} use
-   the same GUI dependencies).  \cr\cr \strong{How to use the screener}
-   \cr\cr The GUI itself will appear as a single window with the first 
-   title/abstract listed in the .csv file. If abstracts have already been 
-   screened/coded, it will begin at the nearest reference labeled as 
-   "not vetted". The SEARCH WEB button opens the default browser and 
-   searches Google with the title of the reference. The YES, MAYBE, NO 
-   buttons, which also have shortcuts ALT-Y and ALT-N, are used to code the 
-   inclusion/exclusion of the reference. Once clicked/coded the next 
-   reference is loaded. The SAVE button is used to save the coding progress 
-   of screening tasks. It will save coding progress directly to the 
-   loaded .csv file. \strong{Closing the GUI and not saving will result in 
-   the loss of screening efforts relative to last save.}  \cr\cr There is 
-   also an ISSUE FIXES menu bar with quick corrections to screening errors. 
-   These include ISSUE FIXES: REFRESH TITLE AND ABSTRACT TEXT which reloads 
-   the text of the current abstract in case portions were deleted when 
-   copying and pasting sections (this can be avoided if 
-   \code{protect = TRUE} is enabled), ISSUE FIXES: STATUS OF CURRENT ABSTRACT 
-   which provides information on whether or not the abstract was previously 
-   screened, and ISSUE FIXES: RETURN TO PREVIOUS ABSTRACT that  
-   backtracks to the previous abstract if a selection error occurred (note a 
-   warning will appear of there is a change to its inclusion/exclusion 
+\strong{Installation and troubleshooting}\cr\cr For Mac OS users,
+   installation is sometimes not straighforward as this screener requires the
+   Tcl/Tk GUI toolkit to be installed. You can get this toolkit by making sure
+   the latest X11 application (xQuartz) is installed, see here: 
+   \url{http://xquartz.macosforge.org/landing/}. More information on
+   installation is found in \code{metagear}'s vignette.
+   \cr\cr \strong{How to use the screener} \cr\cr The GUI itself will appear
+   as a single window with the first title/abstract listed in the .csv file.
+   If abstracts have already been screened/coded, it will begin at the
+   nearest reference labeled as "not vetted". The SEARCH WEB button opens the
+   default browser and searches Google with the title of the reference. The
+   YES, MAYBE, NO buttons, which also have keyboard shortcuts y and n, are
+   used to code the inclusion/exclusion of the reference. Once clicked/coded
+   the next reference is loaded. The SAVE button is used to save the coding
+   progress of screening tasks. It will save coding progress directly to the
+   loaded .csv file. \strong{Closing the GUI, and not saving, will result in
+   the loss of screening efforts relative to last save.}  \cr\cr There is
+   also an ISSUE FIXES menu bar with quick corrections to screening errors.
+   These include ISSUE FIXES: REFRESH TITLE AND ABSTRACT TEXT which reloads
+   the text of the current abstract in case portions were deleted when
+   copying and pasting sections, ISSUE FIXES: STATUS OF CURRENT ABSTRACT
+   which provides information on whether or not the abstract was previously
+   screened, and ISSUE FIXES: RETURN TO PREVIOUS ABSTRACT that
+   backtracks to the previous abstract if a selection error occurred (note a
+   warning will appear of there is a change to its inclusion/exclusion
    coding).
 }
 \examples{
 \dontrun{
 
 data(example_references_metagear)
-effort_distribute(example_references_metagear, 
-                  initialize = TRUE, reviewers = "marc", save_split = TRUE)
-abstract_screener("effort_marc.csv", aReviewer = "marc")
+effort_distribute(example_references_metagear,
+                  initialize = TRUE,
+                  reviewers = "marc",
+                  save_split = TRUE)
+abstract_screener("effort_marc.csv",
+                  aReviewer = "marc",
+                  highlightKeywords = "and")
 }
 
 }

@@ -4,8 +4,12 @@
 \alias{figure_detectAllPoints}
 \title{Automated detection of plotted points from a scatter-plot figure image.}
 \usage{
-figure_detectAllPoints(aBinaryPlot, sensitivity = 0.2,
-  point_shape = "circle", point_size = 5)
+figure_detectAllPoints(
+  aBinaryPlot,
+  sensitivity = 0.2,
+  point_shape = "circle",
+  point_size = 5
+)
 }
 \arguments{
 \item{aBinaryPlot}{A binary figure image (an EBImage object).

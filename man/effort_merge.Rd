@@ -29,6 +29,8 @@ represent the completed screening efforts of multiple team members.  These
 files were originally generated with \code{\link{effort_distribute}}.
 }
 \examples{
+\dontrun{
+
 data(example_references_metagear)
 theTeam <- c("Christina", "Luc")
 # warning effort_distribute below, will save two files to working 
@@ -36,6 +38,7 @@ theTeam <- c("Christina", "Luc")
 effort_distribute(example_references_metagear, initialize = TRUE, 
                   reviewers = theTeam, save_split = TRUE)
 effort_merge()
+}
 
 }
 \seealso{

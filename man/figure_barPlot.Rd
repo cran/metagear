@@ -4,11 +4,23 @@
 \alias{figure_barPlot}
 \title{Detect and display all bar plot objects.}
 \usage{
-figure_barPlot(file = file.choose(), horizontal = FALSE,
-  binary_threshold = 0.6, axis_thickness = 3, axis_sensitivity = 0.2,
-  axis_length = 0.75, axis_X_color = "#00ABAB", axis_Y_color = "#B0D36A",
-  Y_min = 0, Y_max = 100, bar_width = 9, bar_sensitivity = 0.1,
-  point_color = "#0098B2", point_size = 9, ignore = FALSE)
+figure_barPlot(
+  file = file.choose(),
+  horizontal = FALSE,
+  binary_threshold = 0.6,
+  axis_thickness = 3,
+  axis_sensitivity = 0.2,
+  axis_length = 0.75,
+  axis_X_color = "#00ABAB",
+  axis_Y_color = "#B0D36A",
+  Y_min = 0,
+  Y_max = 100,
+  bar_width = 9,
+  bar_sensitivity = 0.1,
+  point_color = "#0098B2",
+  point_size = 9,
+  ignore = FALSE
+)
 }
 \arguments{
 \item{file}{The file name and location of a bar-plot figure.  Prompts

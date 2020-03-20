@@ -4,12 +4,25 @@
 \alias{figure_scatterPlot}
 \title{Detect and display all scatter plot objects.}
 \usage{
-figure_scatterPlot(file = file.choose(), binary_threshold = 0.6,
-  binary_point_fill = FALSE, binary_point_tolerance = 2,
-  axis_thickness = 5, axis_sensitivity = 0.2, axis_X_color = "#00ABAB",
-  X_min = 40, X_max = 140, axis_Y_color = "#B0D36A", Y_min = 40,
-  Y_max = 140, point_sensitivity = 0.2, point_shape = "circle",
-  point_size = 3, point_color = "#0098B2", ignore = FALSE)
+figure_scatterPlot(
+  file = file.choose(),
+  binary_threshold = 0.6,
+  binary_point_fill = FALSE,
+  binary_point_tolerance = 2,
+  axis_thickness = 5,
+  axis_sensitivity = 0.2,
+  axis_X_color = "#00ABAB",
+  X_min = 40,
+  X_max = 140,
+  axis_Y_color = "#B0D36A",
+  Y_min = 40,
+  Y_max = 140,
+  point_sensitivity = 0.2,
+  point_shape = "circle",
+  point_size = 3,
+  point_color = "#0098B2",
+  ignore = FALSE
+)
 }
 \arguments{
 \item{file}{The file name and location of a scatter plot figure.  Prompts

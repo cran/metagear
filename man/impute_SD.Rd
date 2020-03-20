@@ -4,8 +4,14 @@
 \alias{impute_SD}
 \title{Imputes missing standard deviations in a dataset.}
 \usage{
-impute_SD(aDataFrame, columnSDnames, columnXnames, method = "Bracken1992",
-  range = 3, M = 1)
+impute_SD(
+  aDataFrame,
+  columnSDnames,
+  columnXnames,
+  method = "Bracken1992",
+  range = 3,
+  M = 1
+)
 }
 \arguments{
 \item{aDataFrame}{A data frame containing columns with missing SD's (coded as 

@@ -4,9 +4,16 @@
 \alias{effort_distribute}
 \title{Assigns title/abstract screening efforts to a team.}
 \usage{
-effort_distribute(aDataFrame = NULL, dual = FALSE, reviewers = NULL,
-  column_name = "REVIEWERS", effort = NULL, initialize = FALSE,
-  save_split = FALSE, directory = getwd())
+effort_distribute(
+  aDataFrame = NULL,
+  dual = FALSE,
+  reviewers = NULL,
+  column_name = "REVIEWERS",
+  effort = NULL,
+  initialize = FALSE,
+  save_split = FALSE,
+  directory = getwd()
+)
 }
 \arguments{
 \item{aDataFrame}{A data.frame containing the titles and abstracts to be 
@@ -53,9 +60,12 @@ members.  It populates this effort in a data frame column that includes this
 screening work (e.g., ABSTRACTS and TITLES).
 }
 \examples{
+\dontrun{
+
 data(example_references_metagear)
 theTeam <- c("Christina", "Luc")
 effort_distribute(example_references_metagear, initialize = TRUE, reviewers = theTeam)
+}
 
 }
 \seealso{

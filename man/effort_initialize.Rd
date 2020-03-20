@@ -4,8 +4,13 @@
 \alias{effort_initialize}
 \title{Formats a reference dataset for title/abstract screening efforts.}
 \usage{
-effort_initialize(aDataFrame, study_ID = TRUE,
-  unscreenedValue = "not vetted", dual = FALSE, front = TRUE)
+effort_initialize(
+  aDataFrame,
+  study_ID = TRUE,
+  unscreenedValue = "not vetted",
+  dual = FALSE,
+  front = TRUE
+)
 }
 \arguments{
 \item{aDataFrame}{A data.frame object that includes the titles and 

@@ -4,8 +4,12 @@
 \alias{figure_transformToBinary}
 \title{Transforms figure to binary image.}
 \usage{
-figure_transformToBinary(aFigure, threshold = 0.6, point_fill = FALSE,
-  point_tolerance = 2)
+figure_transformToBinary(
+  aFigure,
+  threshold = 0.6,
+  point_fill = FALSE,
+  point_tolerance = 2
+)
 }
 \arguments{
 \item{aFigure}{The original figure image (an \code{EBImage} object).}

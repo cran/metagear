@@ -4,7 +4,9 @@
 \name{Kortum_and_Acymyan_2013_Fig4}
 \alias{Kortum_and_Acymyan_2013_Fig4}
 \title{An example image of a bar plot figure}
-\format{A \code{EBImage} object containing a bar plot raster image}
+\format{
+A \code{EBImage} object containing a bar plot raster image
+}
 \usage{
 data(Kortum_and_Acymyan_2013_Fig4)
 }

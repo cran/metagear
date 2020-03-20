@@ -4,7 +4,9 @@
 \name{Kam_et_al_2003_Fig2}
 \alias{Kam_et_al_2003_Fig2}
 \title{An example image of a scatterplot figure}
-\format{A \code{EBImage} object containing a scatterplot raster image}
+\format{
+A \code{EBImage} object containing a scatterplot raster image
+}
 \usage{
 data(Kam_et_al_2003_Fig2)
 }

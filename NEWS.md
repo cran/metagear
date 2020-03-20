@@ -1,6 +1,20 @@
 Lajeunesse, M.J. (2016) Facilitating systematic reviews, data extraction and meta-analysis with the metagear package for R. Methods in Ecology and Evolution 7, 323−330.
 
 
+# metagear 0.5 (3/20/20)
+
+* Added zzz.R file with major dependency error catching during first installation: message to install EBImage from bioconductor and message to check if Tcl/Tk GUI toolkit is installed
+* Completely migrated non-R GUI dependencies of abstract_screener(); it now uses the base package tcltk rather than gWidgets and gWidgetsRGtk2 to build the GUI. The later packages required users to install non-R dependency GTK+; it also always lead to failed CRAN checks for MacOS (resulting in no CRAN OS X binary builds for more than a year) since the gWidgetsRGtk2 package has not been updated since 2014 and consequently no longer helps mac users to install GTK+. I think Tcl/Tk is included by default in windows and linux (but mac users still need to get XQuartz X11), so this should really improve installation and dependency rot since tcltk is part of base R. TESTED on 1/10/19 in Windows 7 & 10, and Mac OS Mojave. NOTE: since this change, gWidgetsRGtk2 has been updated and old version now works for Mac Os, but will keep new one since it uses base...   
+* Updated abstract_screener() to dynamically generate coding buttons as needed. Thanks to Matt Jones for this suggestion. Now you can remove or add screening buttons beyond the typical YES, NO, MAYBE for coding studies
+* Updated abstract_screener() to have flexible keyboard key-bindings to coding buttons
+* Updated abstract_screener() to include menu dropdown options for reversing coding decisions, backtrack previous coding decisions, refresh abstract/title text (if text was accidentally deleted; now replaces previous protect option), and peek into what previous coding decisions were made. These are found under the new dropdown menu called "Issue fixes"
+* Updated abstract_screener() to include highlighted keywords 
+* Fixed bug in effort_summary() that did not properly sort screening outcomes among the paired Reviewers from dual screening efforts
+* Added Crossref DOI searches to browse_DOI()
+* Updated replicate_phyloMeta1.3() to include tree shape statistics and original VCV calculation as in the C++ (2011) version
+* Fixed PDF download templates for Elsiver which broke vignette
+
+
 # metagear 0.4 (3/14/17)
 
 * As of Jan/2017, Elsevier added numerous redirects and cookies for their PDF downloads; consequently, metagear is (sometimes) no longer able to extract PDFs from this publisher; this also broke an entire vignette section :(
@@ -16,7 +30,7 @@ Lajeunesse, M.J. (2016) Facilitating systematic reviews, data extraction and met
 
 * Updated abstract_screener() to include options for changing the default settings of GUI window size, font size, button sizes, url of search engine, or text protection (thanks to Maria Gatta for this suggestion). A menu bar was also added to help quickly fix screening errors.
 * Total reworking of plot_PRISMA() since previous version could not plot phase grobs when loaded from within the package (although works fine when loaded separately from metagear). Thanks to Hautahi Kingi for making me aware of this problem.  Unfortunately, this new version is not as flexible since it no longer makes use of 'drawDetails' functionality of grid objects that allow for rescaling of plots/objects as the window size gets adjusted by the user.  This mostly results in the spacing among the phase labels to change with window size.  In case high quality plots are needed, the previous plot_PRISMA() function with the nice scaling abilities was added as a supplementary to metagear's vignette.  TO DO: reintroduce the 'drawDetails' function approach and get it to load within the package!
-* Fixed plot_PRISMA() not properly connecting phases when only a single START_PHASE is included in the phase list.  
+* Fixed plot_PRISMA() not properly connecting phases when only a single START_PHASE is included in the phase list  
 * Added poorman's bibliographic scraper using Web of Science's OpenUrl
 * Added extra examples in vignette (PRISMA plot, acknowledgments, installation tips, WOS citations scrape)
 * Updated all figure_ functions that used depreciated R calls from EBImage bioconductor package

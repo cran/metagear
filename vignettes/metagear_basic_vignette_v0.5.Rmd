@@ -1,19 +1,19 @@
 
 ---
 title: |
-  <p><br><img src="http://lajeunesse.myweb.usf.edu/metagear/metagear2.png" alt="" style="width:140px;height:140px;margin:0px 20px 0px 0px;" align="left"></p>Basic examples of screening studies, extracting data and meta-analysis with the ***metagear***  package for *R* <p><br></p>
+  <p><br><img src="http://lajeunesse.myweb.usf.edu/images/metagear_R_package.PNG" alt="" style="width:140px;margin:0px 20px 0px 0px;" align="left"></p>Basic examples of screening studies, extracting data and meta-analysis with the ***metagear***  package for *R* <p><br></p>
 author: '[Marc J. Lajeunesse](http://lajeunesse.myweb.usf.edu/)'
-date: University of South Florida, March 24nd 2017 (vignette v. 0.4 for metagear v.
-  0.4) <p><br></p>   <p><br></p>
+date: University of South Florida, March 19th 2020 (vignette v. 0.5 for metagear v.
+  0.5) <p><br></p>   <p><br></p>
 output:
   word_document:
+    toc: yes
+  html_document:
+    smart: no
     toc: yes
   pdf_document:
     keep_tex: yes
     latex_engine: xelatex
-    toc: yes
-  html_document:
-    smart: no
     toc: yes
 ---
 
@@ -58,23 +58,21 @@ Lajeunesse, M.J. (2016) Facilitating systematic reviews, data extraction and met
 <p><br></p>
 
 ### Installation and Dependencies
-**Metagear** has several dependencies that need to be installed and loaded prior to use in R.  The first is the **EBImage** R package (Pau *et al.* 2010) available only from [Bioconductor](https://www.bioconductor.org) repository.  The second is associated with **metagear**'s `abstract_screener()` function that generates a GUI to help quickly sift bibliographic data from multiple studies. 
+**Metagear** has several dependencies that need to be installed and loaded prior to use in R.  The first is the **EBImage** R package (Pau *et al.* 2010) available only from [Bioconductor](https://www.bioconductor.org) repository.  
 
 To properly install **metagear**, use the following script in R:
 
 ```{r eval=FALSE}
 # first load Bioconductor resources needed to install the EBImage package 
 # and accept/download all of its dependencies
-source("https://bioconductor.org/biocLite.R")
-biocLite("EBImage")
+install.packages("BiocManager"); 
+BiocManager::install("EBImage")
 
 # then load metagear
 library(metagear)
 ```
+Finally for Mac OS users, installation is sometimes not straighforward as the `abstract_screener()` requires the Tcl/Tk GUI toolkit to be installed. You can get this toolkit by making sure the latest X11 application (xQuartz) is installed from here: [xquartz.macosforge.org](http://xquartz.macosforge.org/landing/).
 
-The first loading of **metagear** using `library(metagear)` will trigger the download of the **gWidgets** package and associated toolkits needed to build GUI interfaces. A small window will also prompt you to download GTK+ asking "Need GTK+ ?". From the listed options answer: "Install GTK+" and click "OK". Once installed, these will not be downloaded again. 
-
-Sometimes there is an issue with the installation of GTK+, see [here](http://www.learnanalytics.in/blog/?p=31) or  [here](http://lajeunesse.myweb.usf.edu/metagear/Installing_ Rattle.pdf) for advice based on the **Rattle** R Package. Note that both **Rattle** and **metagear** use the same GUI dependencies.  **Also sometimes the installation will freeze; however, re-starting the R session can fix this issue.**
 
 <p><br></p>
 
@@ -199,7 +197,8 @@ theSummary <- effort_summary(theRefs_screened)
 
 ```{r,echo=FALSE,results="hide"}
 # HIDDEN: clean up generated files
-lapply(c("effort_Luc.csv", "effort_Christina.csv"), file.remove)
+file.remove("effort_Christina.csv")
+file.remove("effort_Luc.csv")
 ```
 
 The summary of screening tasks describes the outcomes of which references had studies appropriate for the synthesis project, while also outlining which need to be re-assessed.  The team should discuss these challenging references and decide if they are appropriate for inclusion or track down any additional/missing information needed to make proper assessment of their inclusion. 
@@ -229,11 +228,12 @@ abstract_screener("effort_marc.csv", aReviewer = "marc")
 The GUI itself will appear as a single window with the first title/abstract listed in the .csv file. If abstracts have already been screened/coded, it will begin at the nearest reference labeled as "not vetted". The SEARCH WEB button opens the default browser and searches Google with the title of the reference. The YES, MAYBE, NO buttons, which also have shortcuts ALT-Y and ALT-N, are used to code the inclusion/exclusion of the reference. Once clicked/coded the next reference is loaded. The SAVE button is used to save the coding progress of screening tasks. It will save coding progress directly to the loaded .csv file. **Closing the GUI and not saving will result in the loss of screening efforts relative to last save.**
 
 Here's what to expect with this GUI (note that depending on the platform running *R*, the layout of this GUI will differ slightly):
-<center>![Metagear Abstract Screener GUI](http://lajeunesse.myweb.usf.edu/metagear/metagear_Abstract_Screener.png)</center>
+<center>![Metagear Abstract Screener GUI](http://lajeunesse.myweb.usf.edu/metagear/metagear_Abstract_Screener_0.5.png)</center>
 
 <p><br></p>
 <center>![Section Break](http://lajeunesse.myweb.usf.edu/metagear/Dots_Divider.png)</center>
 <p><br></p>
+
 
 
 # Workflow example
@@ -258,6 +258,7 @@ library(metagear)
 data(example_references_metagear)
 # display one of the DOI's reference
 theBiblio <- scrape_bibliography(example_references_metagear$DOI[4])
+theBiblio$citation
 ```
 
 Our next goal is to download a PDF of the Ruas et al.'s (2008) journal article and then extract its figures.

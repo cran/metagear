@@ -4,7 +4,9 @@
 \name{example_references_metagear}
 \alias{example_references_metagear}
 \title{A collection of bibliographic references}
-\format{A data frame with 12 rows and 9 variables.}
+\format{
+A data frame with 12 rows and 9 variables.
+}
 \usage{
 data(example_references_metagear)
 }

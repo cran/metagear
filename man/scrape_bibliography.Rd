@@ -9,20 +9,20 @@ scrape_bibliography(DOI, quiet = FALSE)
 \arguments{
 \item{DOI}{A string as the DOI (digital object identifier) of a research article.}
 
-\item{quiet}{When \code{TRUE}, does not print an MLA-style reference of the 
+\item{quiet}{When \code{TRUE}, does not print an MLA-style reference of the
 extracted article.}
 }
 \value{
 A list of bibliographic extractions and a timestamp of the scrape.
 }
 \description{
-A not so elegant way to extract bibliographic data of a research article by 
-scraping the contents of Web of Science (WOS).  Requires the DOI (digital 
+A not so elegant way to extract bibliographic data of a research article by
+scraping the contents of Web of Science (WOS).  Requires the DOI (digital
 object identifier) of an article, as well as web access with an institutional
 subscription to WOS.  Note: This function is not suited to extract data
-for book chapters available on WOS.  Current extractions include: a vector 
-of authors (author), publication year (year), article title (title), journal 
-title (journal), journal volume (volume), page numbers (pages), abstract 
+for book chapters available on WOS.  Current extractions include: a vector
+of authors (author), publication year (year), article title (title), journal
+title (journal), journal volume (volume), page numbers (pages), abstract
 (abstract), number of references (N_references), number of citations
 (N_citations), journal impact factor (journal_IF), and the year the journal
 impact factor was released (journal_IF_year).  Finally the date of the scrape
@@ -34,7 +34,7 @@ or subparagraphs will not be extracted properly.
 
 # use DOI to scrape number of WOS citations of a research article
 data(example_references_metagear)
-someRefs <- effort_initialize(example_references_metagear)  
+someRefs <- effort_initialize(example_references_metagear)
 theWOSRef <- scrape_bibliography(someRefs$DOI[1])
 print(paste("citations = ", theWOSRef$N_citations))
 

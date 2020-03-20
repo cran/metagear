@@ -4,8 +4,13 @@
 \alias{figure_displayDetectedPoints}
 \title{Displays detected points on figure.}
 \usage{
-figure_displayDetectedPoints(aDetectedPlot, background = NULL,
-  color = "red", size = 2, ignore = FALSE)
+figure_displayDetectedPoints(
+  aDetectedPlot,
+  background = NULL,
+  color = "red",
+  size = 2,
+  ignore = FALSE
+)
 }
 \arguments{
 \item{aDetectedPlot}{A binary figure image with detected points 

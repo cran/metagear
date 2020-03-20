@@ -4,8 +4,13 @@
 \alias{replicate_MetaWin2.0}
 \title{Replicate meta-analysis results and summaries from MetaWin 2.0.}
 \usage{
-replicate_MetaWin2.0(model, weights, effects_model = "random", data,
-  bootstraps = 999)
+replicate_MetaWin2.0(
+  model,
+  weights,
+  effects_model = "random",
+  data,
+  bootstraps = 999
+)
 }
 \arguments{
 \item{model}{A two-sided linear formula object describing the model, with the

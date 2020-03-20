@@ -4,24 +4,29 @@
 \alias{effort_summary}
 \title{Provides a text summary of screening efforts among the reviewing team.}
 \usage{
-effort_summary(aDataFrame, column_reviewers = "REVIEWERS",
-  column_effort = "INCLUDE", dual = FALSE, quiet = FALSE)
+effort_summary(
+  aDataFrame,
+  column_reviewers = "REVIEWERS",
+  column_effort = "INCLUDE",
+  dual = FALSE,
+  quiet = FALSE
+)
 }
 \arguments{
-\item{aDataFrame}{A data.frame containing the titles and abstracts that were 
+\item{aDataFrame}{A data.frame containing the titles and abstracts that were
 screened by a team.  The default assumes that the data.frame is the
 merged effort across the team using \code{effort_merge}.}
 
-\item{column_reviewers}{Changes the default label of the "REVIEWERS" column 
+\item{column_reviewers}{Changes the default label of the "REVIEWERS" column
 that contains the screening efforts of each team member.}
 
-\item{column_effort}{Changes the default label of the "INCLUDE" column 
-that contains the screening decisions (coded references) of each team 
+\item{column_effort}{Changes the default label of the "INCLUDE" column
+that contains the screening decisions (coded references) of each team
 member.}
 
 \item{dual}{When \code{TRUE}, provides a summary of the dual screening
-effort as well as estimation of inter-reviewer agreements following 
-Cohen's (1960) kappa (K) and Landis and Koch's (1977) interpretation 
+effort as well as estimation of inter-reviewer agreements following
+Cohen's (1960) kappa (K) and Landis and Koch's (1977) interpretation
 benchmarks.}
 
 \item{quiet}{When \code{TRUE}, does not print to console the summary table.}
@@ -33,21 +38,21 @@ A data frame with summary information on the screening tasks of a
 \description{
 Summarizes the number of studies screened, which were identified to be
 included/excluded from the project, as well as those with conflicting
-agreement on their inclusion/exclusion.  If a dual (paired) design was 
-implemented to screen references, then it also provides inter-reviewer 
-agreement estimate following Cohen (1960) that describes the agreement (or 
-repeatability) of screening/coding decisions. The magnitudes of 
-inter-reviewer agreement estimates are then interpreted following 
+agreement on their inclusion/exclusion.  If a dual (paired) design was
+implemented to screen references, then it also provides inter-reviewer
+agreement estimate following Cohen (1960) that describes the agreement (or
+repeatability) of screening/coding decisions. The magnitudes of
+inter-reviewer agreement estimates are then interpreted following
 Landis & Koch (1977).
 }
 \references{
-Cohen, J. 1960. A coefficient of agreement for nominal scales. 
+Cohen, J. 1960. A coefficient of agreement for nominal scales.
    Educational and Psychological Measurement 20: 37-46.
 
-Landis, J.R., and Koch, G.G. 1977. The measurement of observer 
+Landis, J.R., and Koch, G.G. 1977. The measurement of observer
    agreement for categorical data. Biometrics 33: 159-174.
 }
 \seealso{
-\code{\link{effort_initialize}}, \code{\link{effort_distribute}}, 
+\code{\link{effort_initialize}}, \code{\link{effort_distribute}},
    \code{\link{effort_merge}}
 }

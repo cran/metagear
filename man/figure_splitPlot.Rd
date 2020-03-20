@@ -4,9 +4,17 @@
 \alias{figure_splitPlot}
 \title{Splits a composite figure that contains multiple plots.}
 \usage{
-figure_splitPlot(file = file.choose(), binary_threshold = 0.6,
-  space_sensitivity_X = 0.4, space_sensitivity_Y = 0.6, border_buffer = 5,
-  guess_limit = 10, ignoreX = FALSE, ignoreY = FALSE, quiet = FALSE)
+figure_splitPlot(
+  file = file.choose(),
+  binary_threshold = 0.6,
+  space_sensitivity_X = 0.4,
+  space_sensitivity_Y = 0.6,
+  border_buffer = 5,
+  guess_limit = 10,
+  ignoreX = FALSE,
+  ignoreY = FALSE,
+  quiet = FALSE
+)
 }
 \arguments{
 \item{file}{The file name and location of a composite figure.  Prompts

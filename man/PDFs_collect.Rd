@@ -4,9 +4,19 @@
 \alias{PDFs_collect}
 \title{Attempts to download PDFs from multiple DOI links.}
 \usage{
-PDFs_collect(aDataFrame, DOIcolumn, FileNamecolumn, directory = getwd(),
-  randomize = FALSE, seed = NULL, buffer = FALSE, validatePDF = TRUE,
-  quiet = FALSE, showSummary = TRUE, WindowsProxy = FALSE)
+PDFs_collect(
+  aDataFrame,
+  DOIcolumn,
+  FileNamecolumn,
+  directory = getwd(),
+  randomize = FALSE,
+  seed = NULL,
+  buffer = FALSE,
+  validatePDF = TRUE,
+  quiet = FALSE,
+  showSummary = TRUE,
+  WindowsProxy = FALSE
+)
 }
 \arguments{
 \item{aDataFrame}{A data frame containing a column of DOIs and a column of

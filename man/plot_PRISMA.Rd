@@ -4,8 +4,13 @@
 \alias{plot_PRISMA}
 \title{Plots and creates a PRISMA flow diagram.}
 \usage{
-plot_PRISMA(aPhaseVector, colWidth = 30, excludeDistance = 0.8,
-  design = "classic", hide = FALSE)
+plot_PRISMA(
+  aPhaseVector,
+  colWidth = 30,
+  excludeDistance = 0.8,
+  design = "classic",
+  hide = FALSE
+)
 }
 \arguments{
 \item{aPhaseVector}{A vector of ordered labels (strings) for each phase of

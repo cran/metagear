@@ -4,8 +4,12 @@
 \alias{figure_detectAxis}
 \title{Detect an axis from a figure image.}
 \usage{
-figure_detectAxis(aBinaryPlot, axis_type = "X", axis_thickness = 5,
-  sensitivity = 0.2)
+figure_detectAxis(
+  aBinaryPlot,
+  axis_type = "X",
+  axis_thickness = 5,
+  sensitivity = 0.2
+)
 }
 \arguments{
 \item{aBinaryPlot}{A binary figure image (an EBImage object).
