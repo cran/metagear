@@ -1,6 +1,6 @@
 Package: metagear
-Version: 0.5
-Date: 2020-03-20
+Version: 0.6
+Date: 2020-04-11
 Title: Comprehensive Research Synthesis Tools for Systematic Reviews
         and Meta-Analysis
 Authors@R: person(given = "Marc J.", family = "Lajeunesse", role = c("aut","cre"), 
@@ -17,17 +17,16 @@ Description: Functionalities for facilitating systematic reviews, data
     to fill gaps in incomplete or missing study parameters; generation of random
     effects sizes for Hedges' d, log response ratio, odds ratio, and correlation
     coefficients for Monte Carlo experiments; covariance equations for modelling
-    dependencies among multiple effect sizes (e.g., effect sizes with a common 
+    dependencies among multiple effect sizes (e.g., effect sizes with a common
     control); and finally summaries that replicate analyses and outputs from 
-    widely used but no longer updated meta-analysis software. Funding for this 
-    package was supported by National Science Foundation (NSF) grants 
-    DBI-1262545 and DEB-1451031.
+    widely used but no longer updated meta-analysis software (i.e., metawin).
+	Funding for this package was supported by National Science Foundation (NSF) 
+	grants DBI-1262545 and DEB-1451031.
 Type: Package
 Depends: R (>= 3.3.2)
 biocViews:
 Imports: hexView (>= 0.3-3), Matrix (>= 1.2-7.1), MASS (>= 7.3-45),
-        metafor (>= 1.9-9), RCurl (>= 1.95-4.8), EBImage (>= 4.28),
-        stringr
+        metafor (>= 1.9-9), RCurl (>= 1.95-4.8), EBImage, stringr
 SystemRequirements: Tcl/Tk toolkit (X11 Quarts for Mac)
 VignetteBuilder: R.rsp
 License: GPL (>= 2)
@@ -37,8 +36,8 @@ LazyData: true
 RoxygenNote: 7.1.0
 Suggests: ape, testthat, R.rsp
 NeedsCompilation: no
-Packaged: 2020-03-20 14:50:02 UTC; lajeunesse
+Packaged: 2020-04-11 13:56:21 UTC; lajeunesse
 Author: Marc J. Lajeunesse [aut, cre] (<https://orcid.org/0000-0002-9678-2080>)
 Maintainer: Marc J. Lajeunesse <lajeunesse@usf.edu>
 Repository: CRAN
-Date/Publication: 2020-03-20 15:50:02 UTC
+Date/Publication: 2020-04-11 14:30:03 UTC

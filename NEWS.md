@@ -1,5 +1,10 @@
 Lajeunesse, M.J. (2016) Facilitating systematic reviews, data extraction and meta-analysis with the metagear package for R. Methods in Ecology and Evolution 7, 323−330.
 
+# metagear 0.6 (4/11/20)
+
+* removed version requirements for EBImage package (CRAN binary compilers may not always have the latest version from Bioconductor)
+* typo fixes
+
 
 # metagear 0.5 (3/20/20)
 

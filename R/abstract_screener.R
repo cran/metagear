@@ -44,10 +44,10 @@
 #'    YES-button, m for maybe-button, and n for NO-button. If theButtons parameter
 #'    is modified then these keybindings should also be modified.
 #' @param buttonSize Change the default gWidgets::size of buttons.
-#' @param highlightColor The color of keywords highlighted in title and abstract.
-#'    The default is blue, but for classic yellow use "palegoldenrod".
 #' @param highlightKeywords A string or list of keywords that will be highlighted
 #'    in title and abstract.
+#' @param highlightColor The color of keywords highlighted in title and abstract.
+#'    The default is blue, but for classic yellow use "palegoldenrod".
 #'
 #'
 #' @return NULL

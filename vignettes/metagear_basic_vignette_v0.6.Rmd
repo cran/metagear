@@ -3,13 +3,13 @@
 title: |
   <p><br><img src="http://lajeunesse.myweb.usf.edu/images/metagear_R_package.PNG" alt="" style="width:140px;margin:0px 20px 0px 0px;" align="left"></p>Basic examples of screening studies, extracting data and meta-analysis with the ***metagear***  package for *R* <p><br></p>
 author: '[Marc J. Lajeunesse](http://lajeunesse.myweb.usf.edu/)'
-date: University of South Florida, March 19th 2020 (vignette v. 0.5 for metagear v.
-  0.5) <p><br></p>   <p><br></p>
+date: University of South Florida, April 11th 2020 (vignette v. 0.6 for metagear v.
+  0.6) <p><br></p>   <p><br></p>
 output:
-  word_document:
-    toc: yes
   html_document:
     smart: no
+    toc: yes
+  word_document:
     toc: yes
   pdf_document:
     keep_tex: yes
@@ -33,7 +33,7 @@ options(width = 800)
 
 The **metagear** package for [R](http://www.r-project.org/) contains tools for facilitating [systematic reviews](https://en.wikipedia.org/wiki/Systematic_review), data extraction, and [meta-analyses](https://en.wikipedia.org/wiki/Meta-analysis).  It aims to facilitate research synthesis as a whole, by providing a single source for several of the common tasks involved in screening studies, extracting outcomes from studies, and performing statistical analyses on these outcomes using meta-analysis.  Below are a few illustrative examples of applications of these functionalities.  
 
-Updates to these examples will be posted on our [research webpage at USF](http://lajeunesse.myweb.usf.edu/), and for previous vignette versions see [v. 0.3](http://lajeunesse.myweb.usf.edu/metagear/metagear_basic_vignette_v0.3.html), [v. 0.2](http://lajeunesse.myweb.usf.edu/metagear/metagear_basic_vignette_v0.2.html) and [v. 0.1](http://lajeunesse.myweb.usf.edu/metagear/metagear_basic_vignette_v0.1.html).
+Updates to these examples will be posted on our [research webpage at USF](http://lajeunesse.myweb.usf.edu/), and for previous vignette versions see [v. 0.4](http://lajeunesse.myweb.usf.edu/metagear/metagear_basic_vignette_v0.4.html), [v. 0.3](http://lajeunesse.myweb.usf.edu/metagear/metagear_basic_vignette_v0.3.html), [v. 0.2](http://lajeunesse.myweb.usf.edu/metagear/metagear_basic_vignette_v0.2.html) and [v. 0.1](http://lajeunesse.myweb.usf.edu/metagear/metagear_basic_vignette_v0.1.html).
 
 For the source code of **metagear** see: <http://cran.r-project.org/web/packages/metagear/index.html>.
 
@@ -58,7 +58,7 @@ Lajeunesse, M.J. (2016) Facilitating systematic reviews, data extraction and met
 <p><br></p>
 
 ### Installation and Dependencies
-**Metagear** has several dependencies that need to be installed and loaded prior to use in R.  The first is the **EBImage** R package (Pau *et al.* 2010) available only from [Bioconductor](https://www.bioconductor.org) repository.  
+**Metagear** has several external dependencies that need to be installed and loaded prior to use in R.  The first is the **EBImage** R package (Pau *et al.* 2010) available only from [Bioconductor](https://www.bioconductor.org) repository.  
 
 To properly install **metagear**, use the following script in R:
 
@@ -71,7 +71,8 @@ BiocManager::install("EBImage")
 # then load metagear
 library(metagear)
 ```
-Finally for Mac OS users, installation is sometimes not straighforward as the `abstract_screener()` requires the Tcl/Tk GUI toolkit to be installed. You can get this toolkit by making sure the latest X11 application (xQuartz) is installed from here: [xquartz.macosforge.org](http://xquartz.macosforge.org/landing/).
+
+Finally for Mac OS users, installation is sometimes not straighforward, as the `abstract_screener()` requires the Tcl/Tk GUI toolkit to be installed. You can get this toolkit by making sure that the latest X11 application (xQuartz) is installed from here: [xquartz.macosforge.org](http://xquartz.macosforge.org/landing/).
 
 
 <p><br></p>
