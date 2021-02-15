@@ -9,10 +9,6 @@
 #'    
 #' @return A vector of file names saved as images.
 #'
-#'
-#' @importFrom hexView readRaw blockValue
-#' @importFrom tools file_path_sans_ext
-#' @importFrom RCurl base64Decode
 #' @export PDF_extractImages
 
 PDF_extractImages <- function(file = file.choose()) {
@@ -24,10 +20,10 @@ PDF_extractImages <- function(file = file.choose()) {
   }
   
   # read file in HEX also ASCII
-  rawFile <- readRaw(file, human = "char")
+  rawFile <- hexView::readRaw(file, human = "char")
   
   # test if read file characters is same as file size
-  if (length(blockValue(rawFile)) != file.info(file)$size) {
+  if (length(hexView::blockValue(rawFile)) != file.info(file)$size) {
     .metagearPROBLEM("error",
                      "possible size reading error of PDF")
   }
@@ -58,7 +54,7 @@ PDF_extractImages <- function(file = file.choose()) {
 scanPDFobjects <- function (rawFile, file) {
   
   # collapse ASCII to a single string
-  theStringFile <- paste(blockValue(rawFile), collapse = '')
+  theStringFile <- paste(hexView::blockValue(rawFile), collapse = '')
   
   # split string by PDF objects and keep delimiter
   theObjects <- paste(unlist(strsplit(theStringFile, "endobj")), "endobj", sep="")
@@ -78,7 +74,7 @@ scanPDFobjects <- function (rawFile, file) {
   }
   
   # generate file names for candidate images
-  fileNames <- paste(rep(file_path_sans_ext(file), length(candidateObjects)), 
+  fileNames <- paste(rep(tools::file_path_sans_ext(file), length(candidateObjects)), 
                      "_bin_", 1:length(candidateObjects), ".jpg", sep="")
   
   # extract and save all image binaries found in PDF
@@ -112,7 +108,7 @@ PDFobjectToImageFile <- function (objectLocation,
   PDFLocation <- nchar(paste(theObjects[1:(objectLocation - 1)], collapse = ''))
   
   # extract binary of image from PDF
-  PDFImageBlock <- readRaw(theFile, 
+  PDFImageBlock <- hexView::readRaw(theFile, 
                            offset = PDFLocation + startImageLocation, 
                            nbytes = endImageLocation, machine = "binary")
   
@@ -133,7 +129,7 @@ PDFobjectToImageFile <- function (objectLocation,
 scanPDFXML <- function (rawFile, file) {
   
   # collapse ASCII to a single string
-  theStringFile <- paste(blockValue(rawFile), collapse = '')
+  theStringFile <- paste(hexView::blockValue(rawFile), collapse = '')
   
   # split by XML tags with images and keep delimiter
   theObjects <- paste(unlist(strsplit(theStringFile, "xmpGImg:image>")),
@@ -147,7 +143,7 @@ scanPDFXML <- function (rawFile, file) {
   }
   
   # generate file names for candidate images
-  fileNames <- paste(rep(file_path_sans_ext(file), length(candidateObjects)),
+  fileNames <- paste(rep(tools::file_path_sans_ext(file), length(candidateObjects)),
                      "_XML_", 1:length(candidateObjects), ".jpg", sep="")
   
   # extract and save all image binaries found in PDF
@@ -171,7 +167,7 @@ PDFXMLToImageFile <- function (objectLocation,
   parsedImage <- gsub("&#xA;", "", parsedImage[1])
   
   # decode image to base64
-  decodedImage <- base64Decode(parsedImage, "raw")
+  decodedImage <- RCurl::base64Decode(parsedImage, "raw")
   
   # save binary of image to new file
   detectedImageFile <- file(imageFileName, "wb")

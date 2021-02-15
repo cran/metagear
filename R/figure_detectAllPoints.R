@@ -22,13 +22,16 @@
 #'
 #' @seealso \code{\link{figure_detectAxis}}
 #' 
-#' @importFrom EBImage makeBrush opening watershed distmap 
 #' @export
 
 figure_detectAllPoints <- function (aBinaryPlot, 
                                     sensitivity = 0.2,
                                     point_shape = "circle",
                                     point_size = 5) {
+									
+  # if EBImage not installed, do it
+  .metagearDependencies("EBImage")
+
   
   # convert shape options to those used by EBImage
   point_shape <- switch(point_shape,
@@ -40,12 +43,12 @@ figure_detectAllPoints <- function (aBinaryPlot,
   )
   
   # paint candidate points with box, disc, or diamond brush with defined size
-  pointBrush <- makeBrush(size = point_size, shape = point_shape, step = TRUE)
-  aPaintedFigure <- opening(distmap(aBinaryPlot), pointBrush) 
+  pointBrush <- EBImage::makeBrush(size = point_size, shape = point_shape, step = TRUE)
+  aPaintedFigure <- EBImage::opening(EBImage::distmap(aBinaryPlot), pointBrush) 
   
   # detected symbols with defined sensitivity (smaller number results in a 
   # higher sensitivity to split overlapping points)
-  detectedPointsFigure <- watershed(distmap(aPaintedFigure), 
+  detectedPointsFigure <- EBImage::watershed(EBImage::distmap(aPaintedFigure), 
                                     tolerance = sensitivity, 
                                     ext = 1) 
   

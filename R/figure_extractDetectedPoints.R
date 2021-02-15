@@ -18,7 +18,6 @@
 #'
 #' @return A data frame with the extracted X and Y values.
 #' 
-#' @importFrom EBImage ocontour computeFeatures.moment
 #' @importFrom stats cor
 #' @export
 
@@ -30,6 +29,10 @@ figure_extractDetectedPoints <- function (aDetectedPlot,
                                           Y_min = NULL,
                                           Y_max = NULL,
                                           summarize = TRUE) {
+										  
+  # if EBImage not installed, do it
+  .metagearDependencies("EBImage")
+
 
   # check if figures have detected objects
   theFigures <- c("points" = max(aDetectedPlot), 
@@ -44,13 +47,13 @@ figure_extractDetectedPoints <- function (aDetectedPlot,
   }
                                          
   # get axis reference coordinates from axis-detected figures
-  Xcontr <- ocontour(xAxis) 
+  Xcontr <- EBImage::ocontour(xAxis) 
   X_MaxDistance <- max(Xcontr[[1]][, 1]); X_MinDistance <- min(Xcontr[[1]][, 1])
-  Ycontr <- ocontour(yAxis)
+  Ycontr <- EBImage::ocontour(yAxis)
   Y_MaxDistance <- max(Ycontr[[1]][, 2]); Y_MinDistance <- min(Ycontr[[1]][, 2])
 
   # get all coordinates of points
-  theCoordinates <- computeFeatures.moment(aDetectedPlot)[, 1:2]
+  theCoordinates <- EBImage::computeFeatures.moment(aDetectedPlot)[, 1:2]
   
   # calculate X distance and scale points relative to X axis
   pointDistanceFromX <- theCoordinates[, 1] - X_MinDistance

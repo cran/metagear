@@ -9,13 +9,15 @@
 #'
 #' @seealso \code{\link{figure_read}}
 #' 
-#' @importFrom EBImage writeImage
 #' @export
 
 figure_write <- function (aFigure,
                           file = NULL) {
     
+  # if EBImage not installed, do it
+  .metagearDependencies("EBImage")
+  
   # save EBImage to file
-  return (writeImage(aFigure, file))
+  return (EBImage::writeImage(aFigure, file))
 }
 

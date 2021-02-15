@@ -13,19 +13,22 @@
 #' 
 #' @seealso \link{figure_read}
 #' 
-#' @importFrom EBImage readImage display
 #' @export
 
 figure_display <- function (file = file.choose(), 
                             browser = FALSE) {
+							
+  # if EBImage not installed, do it
+  .metagearDependencies("EBImage")
+
   
   aFigure <- file
-  if(class(aFigure) != "Image") aFigure <- readImage(aFigure)
+  if(class(aFigure) != "Image") aFigure <- EBImage::readImage(aFigure)
   
   if(browser == TRUE) {
-    display(aFigure)
+    EBImage::display(aFigure)
   } else {
-    display(aFigure, method = "raster")
+    EBImage::display(aFigure, method = "raster")
   }
   
 }

@@ -1,6 +1,6 @@
 Package: metagear
-Version: 0.6
-Date: 2020-04-11
+Version: 0.7
+Date: 2021-02-15
 Title: Comprehensive Research Synthesis Tools for Systematic Reviews
         and Meta-Analysis
 Authors@R: person(given = "Marc J.", family = "Lajeunesse", role = c("aut","cre"), 
@@ -21,23 +21,26 @@ Description: Functionalities for facilitating systematic reviews, data
     control); and finally summaries that replicate analyses and outputs from 
     widely used but no longer updated meta-analysis software (i.e., metawin).
 	Funding for this package was supported by National Science Foundation (NSF) 
-	grants DBI-1262545 and DEB-1451031.
+	grants DBI-1262545 and DEB-1451031. CITE: Lajeunesse, M.J. (2016) 
+	Facilitating systematic reviews, data extraction and meta-analysis with the 
+	metagear package for R. Methods in Ecology and Evolution 7, 323-330 
+	<doi:10.1111/2041-210X.12472>.
 Type: Package
 Depends: R (>= 3.3.2)
 biocViews:
-Imports: hexView (>= 0.3-3), Matrix (>= 1.2-7.1), MASS (>= 7.3-45),
-        metafor (>= 1.9-9), RCurl (>= 1.95-4.8), EBImage, stringr
+Imports: Matrix, MASS, metafor (>= 1.9-9), stringr
 SystemRequirements: Tcl/Tk toolkit (X11 Quarts for Mac)
 VignetteBuilder: R.rsp
 License: GPL (>= 2)
-URL: http://lajeunesse.myweb.usf.edu https://github.com/mjlajeunesse
+URL: http://lajeunesse.myweb.usf.edu/ https://github.com/mjlajeunesse/
+        https://www.youtube.com/c/LajeunesseLab/
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.0
-Suggests: ape, testthat, R.rsp
+RoxygenNote: 7.1.1
+Suggests: EBImage, ape, hexView, RCurl, testthat, R.rsp
 NeedsCompilation: no
-Packaged: 2020-04-11 13:56:21 UTC; lajeunesse
+Packaged: 2021-02-15 14:55:42 UTC; lajeunesse
 Author: Marc J. Lajeunesse [aut, cre] (<https://orcid.org/0000-0002-9678-2080>)
 Maintainer: Marc J. Lajeunesse <lajeunesse@usf.edu>
 Repository: CRAN
-Date/Publication: 2020-04-11 14:30:03 UTC
+Date/Publication: 2021-02-15 15:40:02 UTC

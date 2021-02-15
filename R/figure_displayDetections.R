@@ -13,7 +13,6 @@
 #'
 #' @return A RGB \code{EBImage} painted with detected figure objects.
 #' 
-#' @importFrom EBImage paintObjects channel display
 #' @importFrom grDevices rgb col2rgb
 #' @export
 
@@ -21,16 +20,19 @@ figure_displayDetections <- function (aDetectedPlot,
                                       background = NULL,
                                       color = "red",
                                       ignore = FALSE) {
-
+									  
+  # if EBImage not installed, do it
+  .metagearDependencies("EBImage")
 
   # overlay extractions onto background figure
-  paintedFigure <- paintObjects(aDetectedPlot, 
-                                channel(background, "rgb"), 
+  paintedFigure <- EBImage::paintObjects(aDetectedPlot, 
+                                EBImage::channel(background, "rgb"), 
                                 col = rgb(t(col2rgb(color)), maxColorValue = 255), 
                                 opac = 0.75,
                                 thick = TRUE)
   
   # returns a RGB EBimage object painted with detected objects
-  if(!ignore) display(paintedFigure, method = "raster")
+  if(!ignore) EBImage::display(paintedFigure, method = "raster")
   return(paintedFigure)
+  
 }

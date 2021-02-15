@@ -15,20 +15,22 @@
 #'
 #' @return An \code{EBImage} black and white object ready for object detection.
 #' 
-#' @importFrom EBImage channel fillHull watershed distmap 
 #' @export
 
 figure_transformToBinary <- function (aFigure, 
                                       threshold = 0.6,
                                       point_fill = FALSE,
                                       point_tolerance = 2.0) {
+									  
+  # if EBImage not installed, do it
+  .metagearDependencies("EBImage")
   
   # convert plot image to binary image
-  aBinaryFigure <- 1 - (channel(aFigure, mode = "gray") > threshold)
+  aBinaryFigure <- 1 - (EBImage::channel(aFigure, mode = "gray") > threshold)
   
   # if plot symbols are empty, these need to be filled
   if (point_fill) {
-    aBinaryFigure <- fillHull(watershed(distmap(aBinaryFigure), 
+    aBinaryFigure <- EBImage::fillHull(EBImage::watershed(EBImage::distmap(aBinaryFigure), 
                               tolerance = point_tolerance, ext = 1))
   }                          
   

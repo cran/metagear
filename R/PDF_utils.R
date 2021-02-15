@@ -31,6 +31,7 @@ getHTMLfromURL <- function(theURL) {
 aPattern <- function(wildcard_PRE = "",
                      wildcard_POST = "",
                      wildcard_POST_add = "",
+                     wildcard_POST_remove = "",
                      domain = "",
                      anchor = "",
                      multiURLs = "",
@@ -40,6 +41,7 @@ aPattern <- function(wildcard_PRE = "",
   list("wildcard_PRE" = wildcard_PRE,
        "wildcard_POST" = wildcard_POST,
        "wildcard_POST_add" = wildcard_POST_add,
+       "wildcard_POST_remove" = wildcard_POST_remove,
        "domain" = domain,
        "anchor" = anchor,
        "multiURLs" = multiURLs,
@@ -62,6 +64,15 @@ publisherList <- list(
                                  multiURLs = " ",
                                  HTMLredirect = " ",
                                  redirect = "https://pdf.sciencedirectassets.com.*=client"),
+
+  # Elsevier,
+  wcf_elsevier2        = aPattern(wildcard_PRE = "<meta name=\"citation_pii\" content=\".*\"",
+                                  wildcard_POST = "<meta name=\"citation_pii\" content=\"",
+                                  wildcard_POST_remove = ".{1}$",
+                                  HTMLredirect = " ",
+                                  #redirect = "https://pdf.sciencedirectassets.com.*=client",
+                                  domain = "https://www.sciencedirect.com/science/article/pii/",
+                                  anchor = "/pdfft?isDTMRedir=true&amp;download=true"),
 
   # JSTOR
   wcf_jstore          = aPattern(wildcard_PRE = "pdf/.*pdf\" target",
@@ -91,8 +102,8 @@ publisherList <- list(
                                  domain = "http://www.bioone.org"),
 
   # University of Chicago Press
-  wcf_chicago         = aPattern(wildcard_PRE = "/doi/pdfplus/.*\" ",
-                                 wildcard_POST = "\" ",
+  wcf_chicago         = aPattern(wildcard_PRE = "/doi/pdf/.*\" class=\"ctrl",
+                                 wildcard_POST = "\" class=\"ctrl",
                                  domain = "http://www.journals.uchicago.edu"),
 
   # Nature
@@ -140,6 +151,7 @@ scrapeHTML <- function(theHTMLdata,
                        wildcard_PRE,
                        wildcard_POST,
                        wildcard_POST_add,
+                       wildcard_POST_remove,
                        domain,
                        anchor,
                        multiURLs,
@@ -153,15 +165,13 @@ scrapeHTML <- function(theHTMLdata,
     getHTML_Link <- paste0("https://", stringr::str_replace_all(getHTML_Link, "%2F", "/"))
     getHTML_Link <- stringr::str_replace_all(getHTML_Link, "&amp;", "&")
     theHTMLdata <- getHTMLfromURL(getHTML_Link)
- #   message(getHTML_Link)
     #someHTML <- unique(theHTMLdata[which(!is.na(str_extract(theHTMLdata, "https://pdf.")))])
     #getHTML_Link <- gsub(".*window.location = '(.+?)'%3Fvia.*';", "\\1", someHTML)
   }
-#  message(theHTMLdata[1:2])
+
+
   # PRE-scrub of HTML
   candidateURLs <- pullLinks(theHTMLdata, wildcard_PRE)
-
-
 
   # if nothing found return NULL
   if(length(candidateURLs) == 0) return(NULL)
@@ -181,6 +191,11 @@ scrapeHTML <- function(theHTMLdata,
                                                 wildcard_POST_add,
                                                 candidateURLs)
 
+  # POST-scrub of bottom urls
+  if(wildcard_POST_remove != "") candidateURLs <- gsub(wildcard_POST_remove,
+                                                       "",
+                                                       candidateURLs)
+
   # add domain to candidate urls
   if(domain != "") candidateURLs <- paste0(domain, candidateURLs)
 
@@ -191,19 +206,20 @@ scrapeHTML <- function(theHTMLdata,
   candidateURLs <- unique(candidateURLs[!grepl(" ", candidateURLs)])
   if(length(candidateURLs) == 0) return(NULL)
 
-
   if(redirect != "") {
     redirectedHTMLdata <- getHTMLfromURL(candidateURLs)
     candidateURLs <- unique(scrapeHTML(theHTMLdata = redirectedHTMLdata,
                                        wildcard_PRE = redirect,
                                        wildcard_POST = "",
                                        wildcard_POST_add = "",
+                                       wildcard_POST_remove = "",
                                        domain = "",
                                        anchor = "",
                                        multiURLs = multiURLs,
                                        redirect = "",
                                        HTMLredirect = ""))
   }
+
 
   return(candidateURLs)
 }
@@ -256,6 +272,7 @@ extractPDFLinksFromHTML <- function(theHTMLvector,
                                                            x$wildcard_PRE,
                                                            x$wildcard_POST,
                                                            x$wildcard_POST_add,
+                                                           x$wildcard_POST_remove,
                                                            x$domain,
                                                            x$anchor,
                                                            x$multiURLs,
@@ -331,7 +348,7 @@ PDFobjectToImageFile <- function (objectLocation,
   PDFLocation <- nchar(paste(theObjects[1:(objectLocation - 1)], collapse = ''))
 
   # extract binary of image from PDF
-  PDFImageBlock <- readRaw(theFile, offset = PDFLocation + startImageLocation, nbytes = endImageLocation, machine = "binary")
+  PDFImageBlock <- hexView::readRaw(theFile, offset = PDFLocation + startImageLocation, nbytes = endImageLocation, machine = "binary")
 
   # save binary of image to new file
   detectedImageFile <- file(imageFileName, "wb")

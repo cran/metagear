@@ -10,14 +10,16 @@
 #' 
 #' @seealso \link{figure_write}
 #' 
-#' @importFrom EBImage readImage display
 #' @export
 
 figure_read <- function (file = file.choose(), 
                          display = FALSE) {
     
+  # if EBImage not installed, do it
+  .metagearDependencies("EBImage")
+
   # load figure
-  aFigure <- readImage(file)
-  if(display) display(aFigure, method = "raster")
+  aFigure <- EBImage::readImage(file)
+  if(display) EBImage::display(aFigure, method = "raster")
   return (aFigure)
 }

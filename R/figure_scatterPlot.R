@@ -49,7 +49,6 @@
 #'
 #' @return A data frame with detected points.
 #' 
-#' @importFrom EBImage readImage display rmObjects Image
 #' @importFrom stats sd
 #' @export
 
@@ -70,9 +69,13 @@ figure_scatterPlot <- function (file = file.choose(),
                                 point_size = 3,
                                 point_color = "#0098B2",
                                 ignore = FALSE) {
+								
+  # if EBImage not installed, do it
+  .metagearDependencies("EBImage")
+
     
   # load figure and convert to binary (searchable) format
-  aBinaryFigure <- figure_transformToBinary(readImage(file),
+  aBinaryFigure <- figure_transformToBinary(EBImage::readImage(file),
                                             binary_threshold,
                                             binary_point_fill,
                                             binary_point_tolerance)
@@ -98,18 +101,18 @@ figure_scatterPlot <- function (file = file.choose(),
                                                  extractedYFigure)
   
   # separate points of normal size to those that are larger (e.g. clusters)
-  isCluster <- mean(computeFeatures.shape(extractedPoints)[, "s.area"]) + 
-               sd(computeFeatures.shape(extractedPoints)[, "s.area"])
+  isCluster <- mean(EBImage::computeFeatures.shape(extractedPoints)[, "s.area"]) + 
+               sd(EBImage::computeFeatures.shape(extractedPoints)[, "s.area"])
   
-  theClusters <- which(computeFeatures.shape(extractedPoints)[, "s.area"] >= isCluster)
-  thenonClusters <- which(computeFeatures.shape(extractedPoints)[, "s.area"] < isCluster)
+  theClusters <- which(EBImage::computeFeatures.shape(extractedPoints)[, "s.area"] >= isCluster)
+  thenonClusters <- which(EBImage::computeFeatures.shape(extractedPoints)[, "s.area"] < isCluster)
   
-  nonClusters <- rmObjects(extractedPoints, theClusters)
-  clusters <- rmObjects(extractedPoints, thenonClusters)
+  nonClusters <- EBImage::rmObjects(extractedPoints, theClusters)
+  clusters <- EBImage::rmObjects(extractedPoints, thenonClusters)
   
   # paint cluters blue
   someNonClusters <- paintPoints(nonClusters, 
-                                 readImage(file), 
+                                 EBImage::readImage(file), 
                                  size = 17, 
                                  color = point_color)
   someClusters <- paintPoints(clusters, 
@@ -128,7 +131,7 @@ figure_scatterPlot <- function (file = file.choose(),
                                             ignore = TRUE)
                                           
   # displays a RGB EBimage object painted with detected objects                                          
-  if(!ignore) display(overlayedPlot, method = "raster")
+  if(!ignore) EBImage::display(overlayedPlot, method = "raster")
   
   extracted <- figure_extractDetectedPoints(extractedPoints,
                                             extractedXFigure,
@@ -138,7 +141,7 @@ figure_scatterPlot <- function (file = file.choose(),
                                             Y_min = Y_min,
                                             Y_max = Y_max,
                                             summarize = TRUE)
-  extracted$cluster <- computeFeatures.shape(extractedPoints)[, "s.area"] >= isCluster
+  extracted$cluster <- EBImage::computeFeatures.shape(extractedPoints)[, "s.area"] >= isCluster
   
   return(extracted)
 }

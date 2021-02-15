@@ -16,7 +16,6 @@
 #' 
 #' @seealso \link{figure_displayDetections}
 #' 
-#' @importFrom EBImage computeFeatures.moment channel drawCircle display
 #' @importFrom grDevices rgb col2rgb
 #' @export
 
@@ -25,42 +24,45 @@ figure_displayDetectedPoints <- function (aDetectedPlot,
                                           color = "red",
                                           size = 2,
                                           ignore = FALSE) {
+										  
+  # if EBImage not installed, do it
+  .metagearDependencies("EBImage")
 
   # get coordinates of each point
-  theCoordinates <- computeFeatures.moment(aDetectedPlot)[, 1:2]
+  theCoordinates <- EBImage::computeFeatures.moment(aDetectedPlot)[, 1:2]
   
   # add detected points using EBImage drawCircle() function
   # NOTE: this drawCircle() function is slow!
   for(i in 1:max(aDetectedPlot)) {
     if(i == 1) { 
-      #paintedFigure <- drawCircle(channel(background, "rgb"), 
+      #paintedFigure <- EBImage::drawCircle(EBImage::channel(background, "rgb"), 
       #                            theCoordinates[i, 1], theCoordinates[i, 2], 
       #                            radius = size + 3,
       #                            col = "#FF7070", 
       #                            fill = FALSE)
-      #paintedFigure <- drawCircle(paintedFigure,
+      #paintedFigure <- EBImage::drawCircle(paintedFigure,
       #                            theCoordinates[i, 1], theCoordinates[i, 2], 
       #                            radius = size, 
       #                            col = rgb(t(col2rgb(color)), max = 255), 
       #                            fill = TRUE)
-      paintedFigure <- drawCircle(channel(background, "rgb"),
+      paintedFigure <- EBImage::drawCircle(EBImage::channel(background, "rgb"),
                                   theCoordinates[i, 1], theCoordinates[i, 2], 
                                   radius = size, 
                                   col = rgb(t(col2rgb(color)), maxColorValue = 255), 
                                   fill = TRUE)
     }
     else {
-      #paintedFigure <- drawCircle(paintedFigure, 
+      #paintedFigure <- EBImage::drawCircle(paintedFigure, 
       #                            theCoordinates[i,1], theCoordinates[i,2], 
       #                            radius = size + 3, 
       #                            col = "#FF7070", 
       #                            fill = FALSE)
-      #paintedFigure <- drawCircle(paintedFigure, 
+      #paintedFigure <- EBImage::drawCircle(paintedFigure, 
       #                            theCoordinates[i,1], theCoordinates[i,2], 
       #                            radius = size, 
       #                            col = rgb(t(col2rgb(color)), maxColorValue = 255), 
       #                            fill = TRUE)
-      paintedFigure <- drawCircle(paintedFigure, 
+      paintedFigure <- EBImage::drawCircle(paintedFigure, 
                                   theCoordinates[i,1], theCoordinates[i,2], 
                                   radius = size, 
                                   col = rgb(t(col2rgb(color)), maxColorValue = 255), 
@@ -69,6 +71,6 @@ figure_displayDetectedPoints <- function (aDetectedPlot,
   }
   
   # returns a RGB EBimage object painted with detected objects
-  if(!ignore) display(paintedFigure, method = "raster")
+  if(!ignore) EBImage::display(paintedFigure, method = "raster")
   return(paintedFigure)
 }

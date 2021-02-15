@@ -38,7 +38,6 @@
 #'
 #' @return The number of sub-plots saved to file.
 #'
-#' @importFrom EBImage readImage
 #' @export
 
 figure_splitPlot <- function (file = file.choose(),
@@ -51,7 +50,11 @@ figure_splitPlot <- function (file = file.choose(),
 							  ignoreY = FALSE,
                               quiet = FALSE) {
   
-  theFigure <- readImage(file)
+  # if EBImage not installed, do it
+  .metagearDependencies("EBImage")
+
+  
+  theFigure <- EBImage::readImage(file)
   
   # load figure and convert to binary (searchable) format
   aBinaryFigure <- figure_transformToBinary(theFigure,
@@ -92,7 +95,7 @@ figure_splitPlot <- function (file = file.choose(),
     for (i in 1:(length(theX) - 1)) {
       for (j in 1:(length(theY) - 1)) {
         croppedFig <- theFigure[theX[i]:theX[i + 1], theY[j]:theY[j + 1], ]
-		newFileName <- paste0(file_path_sans_ext(file), "_subPlot_", countFig, "_of_", totalFigs, ".jpg")
+		newFileName <- paste0(tools::file_path_sans_ext(file), "_subPlot_", countFig, "_of_", totalFigs, ".jpg")
         if(quiet != TRUE) print(newFileName)
         figure_write(croppedFig, file = newFileName)
         countFig <- countFig + 1

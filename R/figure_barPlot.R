@@ -49,7 +49,6 @@
 #'
 #' @return A vector of scaled lengths for detected column and error bars.
 #'
-#' @importFrom EBImage readImage display rmObjects flip flop transpose
 #' @export
 
 figure_barPlot <- function (file = file.choose(),
@@ -67,11 +66,15 @@ figure_barPlot <- function (file = file.choose(),
                             point_color = "#0098B2",
                             point_size = 9,
                             ignore = FALSE) {
+							
+  # if EBImage not installed, do it
+  .metagearDependencies("EBImage")
+
   
-  theFigure <- readImage(file)
+  theFigure <- EBImage::readImage(file)
   
   if(horizontal == TRUE) {
-    theFigure <- transpose(flop(theFigure))
+    theFigure <- EBImage::transpose(EBImage::flop(theFigure))
   }
   
   # load figure and convert to binary (searchable) format
@@ -90,25 +93,25 @@ figure_barPlot <- function (file = file.choose(),
                                         axis_thickness = dim(aBinaryFigure)[2] * axis_length)
     
   # detect all horizontal lines (the caps of column bars and error bars)
-  lineBrush <- makeBrush(bar_width, shape = "line", angle = 0)
-  verticalLinesOnlyFigure <- opening(distmap(aBinaryFigure), lineBrush)
-  extractedBars <- watershed(distmap(verticalLinesOnlyFigure), bar_sensitivity) 
+  lineBrush <- EBImage::makeBrush(bar_width, shape = "line", angle = 0)
+  verticalLinesOnlyFigure <- EBImage::opening(EBImage::distmap(aBinaryFigure), lineBrush)
+  extractedBars <- EBImage::watershed(EBImage::distmap(verticalLinesOnlyFigure), bar_sensitivity) 
   
   # clean up detections: outliers
   extractedBars <- figure_removeOutlyingPoints(extractedBars, extractedXFigure, extractedYFigure)
   
   # clean up detections: exclude large horizontal lines detected, based on % X axis length
-  theLines <- computeFeatures.shape(extractedBars)
+  theLines <- EBImage::computeFeatures.shape(extractedBars)
   exclusionList <- which(theLines[, "s.area"] >= dim(extractedBars)[1] * axis_length)
-  extractedBars <- rmObjects(extractedBars, exclusionList)
+  extractedBars <- EBImage::rmObjects(extractedBars, exclusionList)
   
   # get all coordinates of detected lines & sort by x
-  theBars <- computeFeatures.moment(extractedBars)[, 1:2]
+  theBars <- EBImage::computeFeatures.moment(extractedBars)[, 1:2]
   theBars <- theBars[order(theBars[, 1]), ]
   
   # calculate Y distance and scale points relative to Y axis
   # and get X axis reference coordinates from axis-detected figures to correct Y
-  Xcontr <- ocontour(extractedXFigure); Ycontr <- ocontour(extractedYFigure);
+  Xcontr <- EBImage::ocontour(extractedXFigure); Ycontr <- EBImage::ocontour(extractedYFigure);
   Y_MaxDistance <- max(Xcontr[[1]][, 2]); Y_MinDistance <- min(Ycontr[[1]][, 2]);
   pointDistanceFromY <- Y_MaxDistance - theBars[, 2]
   scaleY <- Y_max - Y_min
@@ -122,10 +125,10 @@ figure_barPlot <- function (file = file.choose(),
                                   color = point_color)
     
     if(horizontal == TRUE) {
-      thePaintedPlot <- flop(transpose(thePaintedPlot))
+      thePaintedPlot <- EBImage::flop(EBImage::transpose(thePaintedPlot))
     }
     
-    display(thePaintedPlot, method = "raster")
+    EBImage::display(thePaintedPlot, method = "raster")
   }
   
   return(observedY)

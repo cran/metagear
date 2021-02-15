@@ -1,5 +1,15 @@
 Lajeunesse, M.J. (2016) Facilitating systematic reviews, data extraction and meta-analysis with the metagear package for R. Methods in Ecology and Evolution 7, 323−330.
 
+# metagear 0.7 (2/12/21)
+
+* Removed some testThat tests that use random numbers: randomly got errors and CRAN will not like it (since they won't rerun tests)
+* Moved many dependencies from Imports to Suggest -- in particular focusing on minimizing EBImage package footprint and limiting installation from Bioconductor until a figure extraction function is called
+* Added external dependency checks when package is loaded
+* Converted image data examples from .rda to orginal jpg formats (keeps package size small) [also modified vignette to reflect new way of loading packaged images]
+* Updated some of the PDF_download() ad-hoc searches for PDFs.
+* typo fixes
+
+
 # metagear 0.6 (4/11/20)
 
 * removed version requirements for EBImage package (CRAN binary compilers may not always have the latest version from Bioconductor)

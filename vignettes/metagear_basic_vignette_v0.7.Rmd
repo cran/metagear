@@ -3,13 +3,13 @@
 title: |
   <p><br><img src="http://lajeunesse.myweb.usf.edu/images/metagear_R_package.PNG" alt="" style="width:140px;margin:0px 20px 0px 0px;" align="left"></p>Basic examples of screening studies, extracting data and meta-analysis with the ***metagear***  package for *R* <p><br></p>
 author: '[Marc J. Lajeunesse](http://lajeunesse.myweb.usf.edu/)'
-date: University of South Florida, April 11th 2020 (vignette v. 0.6 for metagear v.
-  0.6) <p><br></p>   <p><br></p>
+date: University of South Florida, February 12th 2021 (vignette v. 0.7 for metagear v.
+  0.7) <p><br></p>   <p><br></p>
 output:
+  word_document:
+    toc: yes
   html_document:
     smart: no
-    toc: yes
-  word_document:
     toc: yes
   pdf_document:
     keep_tex: yes
@@ -532,7 +532,7 @@ Extracting data from a figure image is a common challenge when trying to extract
 library(metagear)
 library(EBImage)
 # load the scatterplot image, source: Kam et al. (2003) Functional Ecology 17:496-503.
-data(Kam_et_al_2003_Fig2)
+Kam_et_al_2003_Fig2 <- system.file("images", "Kam_et_al_2003_Fig2.jpg", package = "metagear")
 # display the image
 figure_display(Kam_et_al_2003_Fig2) 
 ```
@@ -548,16 +548,10 @@ The `figure_scatterPlot()` will by default output three objects:
 Here are the results of using `figure_scatterPlot()` on Kam et al.'s (2002) figure.
 
 ```{r}
-# convert back to .jpg
-figure_write(Kam_et_al_2003_Fig2, file = "Kam_et_al_2003_Fig2.jpg")
 # load the scatterplot image, source: Kam et al. (2003) Functional Ecology 17:496-503.
-rawData <- figure_scatterPlot("Kam_et_al_2003_Fig2.jpg") 
+rawData <- figure_scatterPlot(Kam_et_al_2003_Fig2) 
 ```
 
-```{r,echo=FALSE,results="hide"}
-# HIDDEN: clean up generated image file
-file.remove("Kam_et_al_2003_Fig2.jpg")
-```
 
 The estimated regression coefficients are very similar to those originally reported by Kam et al.'s (2002) study; which were Y = 12.03 + 0.907 * X with an R2 = 0.59 and a sample size of N = 51.
 
@@ -641,7 +635,7 @@ Let's have a look at the bar plot image provided by **metagear** called `Kortum_
 # load metagear package
 library(metagear)
 # load the scatterplot image, source: Kortum & Acymyan (2013) J. of Usability Studies 9:14-24).
-data(Kortum_and_Acymyan_2013_Fig4)
+Kortum_and_Acymyan_2013_Fig4 <- system.file("images", "Kortum_and_Acymyan_2013_Fig4.jpg", package = "metagear")
 # display the image
 figure_display(Kortum_and_Acymyan_2013_Fig4)
 ```
@@ -649,15 +643,9 @@ figure_display(Kortum_and_Acymyan_2013_Fig4)
 Manual extraction of the bars and their errors will be time consuming here given that there are 42 separate data points to be gathered (i.e. 14 bars each with upper and lower error bars).   Let's use `figure_barPlot()` with its default options to extract these 42 points.   
 
 ```{r}
-# convert metagear image object back to .jpg and then extract objects from this .jpg
-figure_write(Kortum_and_Acymyan_2013_Fig4, file = "Kortum_and_Acymyan_2013_Fig4.jpg")
-rawData <- figure_barPlot("Kortum_and_Acymyan_2013_Fig4.jpg")
+rawData <- figure_barPlot(Kortum_and_Acymyan_2013_Fig4)
 ```
 
-```{r,echo=FALSE,results="hide"}
-# HIDDEN: clean up downloaded image file
-file.remove("Kortum_and_Acymyan_2013_Fig4.jpg")
-```
 
 In the above image, the detected points for each ballot were painted in blue.  Let's have a closer look at these extracted data.
 

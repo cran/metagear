@@ -13,5 +13,12 @@ BiocManager::install("EBImage")
 library(metagear)
 ``` 
 
+This dependency sometimes results in CRAN failing to generate a binary of **metagear** for your OS -- which sadly happens often. In this case install from the source, for example:
+
+``` r
+install.packages("metagear_0.7.tar.gz", repos = "http://cran.us.r-project.org", type = "source", dependencies = TRUE)
+library(metagear)
+``` 
+
 ### How to cite?
 Lajeunesse, M.J. (2016) Facilitating systematic reviews, data extraction and meta-analysis with the metagear package for R. *Methods in Ecology and Evolution* 7, 323−330. Download PDF here: [http://lajeunesse.myweb.usf.edu](http://lajeunesse.myweb.usf.edu/papers/Lajeunesse_2016_Methods_in_Ecology_and_Evolution.pdf).

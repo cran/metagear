@@ -6,7 +6,7 @@
 #' systematic review approach to objectively assemble and screen the literature, 
 #' to extracting data from studies, and to finally summarize and analyze these 
 #' data with the statistics of meta-analysis.  More information about 
-#' \pkg{metagear} can be found at \url{http://lajeunesse.myweb.usf.edu}.
+#' \pkg{metagear} can be found at \url{http://lajeunesse.myweb.usf.edu/}.
 #'
 #' @details \strong{What to cite?}\cr\cr Lajeunesse, M.J. (2016) Facilitating 
 #' systematic reviews, data extraction and meta-analysis with the metagear 
@@ -15,7 +15,7 @@
 #' \cr\cr \strong{Installation and Dependencies.}\cr\cr \pkg{metagear} has one 
 #' external dependency that need to be installed and loaded prior to use in R.
 #' This is the EBImage R package (Pau et al. 2010) available only from the 
-#' Bioconductor repository: \url{https://www.bioconductor.org}. 
+#' Bioconductor repository: \url{https://www.bioconductor.org/}. 
 #' \cr\cr To properly install \pkg{metagear}, start with the following
 #' R script that loads the Bioconductor resources needed to install the EBImage 
 #' (also accept all of its dependencies): \cr\cr
@@ -24,7 +24,7 @@
 #' is sometimes not straighforward as the abstract_screener() requires the
 #' Tcl/Tk GUI toolkit to be installed. You can get this toolkit by making sure
 #' the latest X11 application (xQuartz) is installed from here: 
-#' \url{http://xquartz.macosforge.org/landing/}.
+#' \url{https://www.xquartz.org/}.
 #'
 #' @references Pau, G., Fuchs, F., Sklyar, O., Boutros, M. and Huber, W. (2010)
 #' EBImage: an R package for image processing with applications to cellular

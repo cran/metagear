@@ -15,16 +15,19 @@
 #'
 #' @seealso \code{\link{figure_transformToBinary}}
 #' 
-#' @importFrom EBImage channel hist imageData distmap 
 #' @export
 
 figure_transformByColors <- function(aFigure,
                                      colorsToSplit = 2) {
+									 
+  # if EBImage not installed, do it
+  .metagearDependencies("EBImage")
+
   
   # split RBG image into bins based on counts of different 
   # shades (intensities) of gray
-  grayedPlot <- channel(aFigure, "gray")
-  shades <- hist(imageData(grayedPlot), breaks = 20)
+  grayedPlot <- EBImage::channel(aFigure, "gray")
+  shades <- EBImage::hist(EBImage::imageData(grayedPlot), breaks = 20)
   num_shades <- length(shades$counts)
   num_bins <- num_shades - (num_shades - (colorsToSplit + 1))
   bins <- shades$breaks[which(rank(-shades$counts) %in% seq(from = 1, to = num_bins))]

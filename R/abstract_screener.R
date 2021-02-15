@@ -68,7 +68,7 @@
 #'    installation is sometimes not straighforward as this screener requires the
 #'    Tcl/Tk GUI toolkit to be installed. You can get this toolkit by making sure
 #'    the latest X11 application (xQuartz) is installed, see here: 
-#'    \url{http://xquartz.macosforge.org/landing/}. More information on
+#'    \url{https://www.xquartz.org/}. More information on
 #'    installation is found in \code{metagear}'s vignette.
 #'    \cr\cr \strong{How to use the screener} \cr\cr The GUI itself will appear
 #'    as a single window with the first title/abstract listed in the .csv file.

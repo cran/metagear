@@ -15,12 +15,15 @@
 #' @return An \code{EBImage} object with detected points within the specified X-
 #'    and Y-axis ranges.
 #' 
-#' @importFrom EBImage ocontour computeFeatures.moment rmObjects 
 #' @export
 
 figure_removeOutlyingPoints <- function (aDetectedPlot, 
                                          xAxis = NULL,
                                          yAxis = NULL) {
+										 
+  # if EBImage not installed, do it
+  .metagearDependencies("EBImage")
+
 
   # check if figures have detected objects
   theFigures <- c("points" = max(aDetectedPlot), 
@@ -35,18 +38,18 @@ figure_removeOutlyingPoints <- function (aDetectedPlot,
   }
                                          
   # get axis reference coordinates from axis-detected figures
-  Xcontr <- ocontour(xAxis) 
+  Xcontr <- EBImage::ocontour(xAxis) 
   Xmax <- max(Xcontr[[1]][, 1]); Xmin <- min(Xcontr[[1]][, 1])
-  Ycontr <- ocontour(yAxis)
+  Ycontr <- EBImage::ocontour(yAxis)
   Ymax <- max(Ycontr[[1]][, 2]); Ymin <- min(Ycontr[[1]][, 2])
   
   # find and remove points lying outside of axis range
-  theCoordinates <- computeFeatures.moment(aDetectedPlot)[,1:2]
+  theCoordinates <- EBImage::computeFeatures.moment(aDetectedPlot)[,1:2]
   exclusionList <- which(theCoordinates[, 1] >= Xmax | 
                          theCoordinates[, 1] <= Xmin | 
                          theCoordinates[, 2] >= Ymax | 
                          theCoordinates[, 2] <= Ymin) 
-  cleanedPointFigure <- rmObjects(aDetectedPlot, exclusionList)
+  cleanedPointFigure <- EBImage::rmObjects(aDetectedPlot, exclusionList)
   
   # returns EBimage object with only detected points within axis range
   return(cleanedPointFigure)
